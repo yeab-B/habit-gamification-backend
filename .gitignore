@@ -1,0 +1,11 @@
+.env
+# ignore any env variants (e.g. .env.local, .env.test)
+.env.*
+# also ignore plain env folder or file named env
+env
+env/
+
+# ignore vendor directory (common for PHP/composer dependencies)
+vendor/
+# also ignore vendor file if present
+vendor
