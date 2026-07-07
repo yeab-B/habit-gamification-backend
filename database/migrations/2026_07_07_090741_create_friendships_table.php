@@ -12,45 +12,46 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('challenge_users', function (Blueprint $table) {
+        Schema::create('friendships', function (Blueprint $table) {
 
             $table->id();
 
 
-            // Challenge that user joined
-            $table->foreignId('challenge_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
-
-
-            // User who joined challenge
+            // User who sends request
             $table->foreignId('user_id')
-                  ->constrained()
+                  ->constrained('users')
                   ->cascadeOnDelete();
 
 
-            // Participant status
+            // User who receives request
+            $table->foreignId('friend_id')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
+
+
+            // Friendship status
             $table->enum('status', [
+
                 'pending',
                 'accepted',
-                'rejected',
-                'left'
+                'blocked'
+
             ])
             ->default('pending');
 
 
-            // Date user joined
-            $table->timestamp('joined_at')
+            // When friendship accepted
+            $table->timestamp('accepted_at')
                   ->nullable();
 
 
             $table->timestamps();
 
 
-            // Prevent same user joining same challenge twice
+            // Prevent duplicate requests
             $table->unique([
-                'challenge_id',
-                'user_id'
+                'user_id',
+                'friend_id'
             ]);
 
         });
@@ -62,7 +63,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('challenge_users');
+        Schema::dropIfExists('friendships');
     }
 
 };

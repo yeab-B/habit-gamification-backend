@@ -6,16 +6,64 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('daily_checkins', function (Blueprint $table) {
+
             $table->id();
+
+
+            // User who checked in
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+
+            // Challenge progress belongs to
+            $table->foreignId('challenge_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+
+            // Check-in date
+            $table->date('date');
+
+
+            // Number of tasks completed that day
+            $table->integer('completed_tasks')
+                  ->default(0);
+
+
+            // Total coins earned that day
+            $table->integer('coins_earned')
+                  ->default(0);
+
+
+            // Daily status
+            $table->enum('status', [
+                'completed',
+                'missed'
+            ])
+            ->default('completed');
+
+
             $table->timestamps();
+
+
+            // User can only have one check-in per challenge per day
+            $table->unique([
+                'user_id',
+                'challenge_id',
+                'date'
+            ]);
+
         });
     }
+
 
     /**
      * Reverse the migrations.
@@ -24,4 +72,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('daily_checkins');
     }
+
 };

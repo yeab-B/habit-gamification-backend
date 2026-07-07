@@ -6,16 +6,57 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('task_completions', function (Blueprint $table) {
+
             $table->id();
+
+
+            // User who completed task
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+
+            // Completed task
+            $table->foreignId('task_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+
+            // Challenge where task was completed
+            $table->foreignId('challenge_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+
+            // Date task was completed
+            $table->date('completed_date');
+
+
+            // Points earned from this completion
+            $table->integer('points_earned')
+                  ->default(0);
+
+
             $table->timestamps();
+
+
+            // Prevent completing same task multiple times per day
+            $table->unique([
+                'user_id',
+                'task_id',
+                'completed_date'
+            ]);
+
         });
     }
+
 
     /**
      * Reverse the migrations.
@@ -24,4 +65,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('task_completions');
     }
+
 };

@@ -12,10 +12,35 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
+
             $table->id();
+
+            // Category owner
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            // Category name
+            // Example: Fitness, Study, Health
+            $table->string('name');
+
+
+            // Category icon
+            // Example: 💪 📚 💰
+            $table->string('icon')
+                  ->nullable();
+
+
+            // Additional information
+            $table->text('description')
+                  ->nullable();
+
+
             $table->timestamps();
+
         });
     }
+
 
     /**
      * Reverse the migrations.
