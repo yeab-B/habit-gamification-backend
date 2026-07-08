@@ -24,15 +24,15 @@ return new class extends Migration
 
 
             // Related challenge
-            $table->foreignId('challenge_id')
-                  ->constrained()
+            $table->foreignUuid('challenge_id')
+                ->constrained('challenges')
                   ->cascadeOnDelete();
 
 
             // Friend challenge if applicable
             $table->foreignId('friend_challenge_id')
-                  ->nullable()
-                  ->constrained()
+                ->nullable()
+                ->constrained('friend_challenges')
                   ->cascadeOnDelete();
 
 

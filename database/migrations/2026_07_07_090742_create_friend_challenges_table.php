@@ -18,8 +18,8 @@ return new class extends Migration
 
 
             // Main challenge
-            $table->foreignId('challenge_id')
-                  ->constrained()
+            $table->foreignUuid('challenge_id')
+                  ->constrained('challenges')
                   ->cascadeOnDelete();
 
 
