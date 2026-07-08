@@ -31,9 +31,9 @@ return new class extends Migration
 
 
             // Related task
-            $table->foreignId('task_id')
+            $table->foreignUuid('task_id')
                   ->nullable()
-                  ->constrained()
+                ->constrained('tasks')
                   ->cascadeOnDelete();
 
 

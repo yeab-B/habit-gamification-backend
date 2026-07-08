@@ -1,0 +1,510 @@
+{
+  "info": {
+    "_postman_id": "d8f75945-7344-4719-9712-2726e79006e1",
+    "name": "DayChallenge API - Phase 2 Categories & Tasks",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Phase 2 APIs for Categories and Tasks management. All endpoints require Sanctum Bearer token authentication."
+  },
+  "item": [
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Returns all categories that belong to the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/api/categories"
+              },
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Categories retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"5f5c4b2d-9d7a-4f2d-a807-7b7a1c84ff10\",\n      \"user_id\": \"f17d6cd6-36fc-4d05-b699-c9815aef52f7\",\n      \"name\": \"Fitness\",\n      \"description\": \"Health and exercise habits\",\n      \"icon\": \"💪\",\n      \"color\": \"blue\",\n      \"created_at\": \"2026-07-08T10:00:00.000000Z\",\n      \"updated_at\": \"2026-07-08T10:00:00.000000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/api/categories"
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fitness\",\n  \"description\": \"Health and exercise habits\",\n  \"icon\": \"💪\",\n  \"color\": \"blue\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Creates a new category under the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Category created successfully\",\n  \"data\": {\n    \"id\": \"5f5c4b2d-9d7a-4f2d-a807-7b7a1c84ff10\",\n    \"user_id\": \"f17d6cd6-36fc-4d05-b699-c9815aef52f7\",\n    \"name\": \"Fitness\",\n    \"description\": \"Health and exercise habits\",\n    \"icon\": \"💪\",\n    \"color\": \"blue\",\n    \"created_at\": \"2026-07-08T10:00:00.000000Z\",\n    \"updated_at\": \"2026-07-08T10:00:00.000000Z\"\n  }\n}"
+            },
+            {
+              "name": "Error - Validation",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"name\": [\"The name field is required.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fitness Pro\",\n  \"description\": \"Updated details\",\n  \"icon\": \"🏋️\",\n  \"color\": \"green\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{category_id}}"
+              ]
+            },
+            "description": "Updates an existing user-owned category."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Category updated successfully\",\n  \"data\": {\n    \"id\": \"5f5c4b2d-9d7a-4f2d-a807-7b7a1c84ff10\",\n    \"name\": \"Fitness Pro\",\n    \"description\": \"Updated details\",\n    \"icon\": \"🏋️\",\n    \"color\": \"green\"\n  }\n}"
+            },
+            {
+              "name": "Error - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\"You are not allowed to perform this action.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{category_id}}"
+              ]
+            },
+            "description": "Soft deletes a category and soft deletes related tasks owned by the user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Category deleted successfully\",\n  \"data\": []\n}"
+            },
+            {
+              "name": "Error - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\"You are not allowed to perform this action.\"]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get Tasks",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tasks?category_id={{category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ],
+              "query": [
+                {
+                  "key": "category_id",
+                  "value": "{{category_id}}",
+                  "description": "Optional filter by category UUID"
+                }
+              ]
+            },
+            "description": "Returns tasks belonging to authenticated user. Supports optional category_id filter."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Tasks retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"2cc90e58-9869-4d93-bfcc-e0771f570efa\",\n      \"user_id\": \"f17d6cd6-36fc-4d05-b699-c9815aef52f7\",\n      \"category_id\": \"5f5c4b2d-9d7a-4f2d-a807-7b7a1c84ff10\",\n      \"title\": \"Exercise 30 minutes\",\n      \"description\": \"Morning workout\",\n      \"points\": 10,\n      \"is_active\": true,\n      \"created_at\": \"2026-07-08T10:00:00.000000Z\",\n      \"updated_at\": \"2026-07-08T10:00:00.000000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error - Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"title\": \"Exercise 30 minutes\",\n  \"description\": \"Morning workout\",\n  \"points\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tasks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            },
+            "description": "Creates a task under a category that belongs to the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Task created successfully\",\n  \"data\": {\n    \"id\": \"2cc90e58-9869-4d93-bfcc-e0771f570efa\",\n    \"user_id\": \"f17d6cd6-36fc-4d05-b699-c9815aef52f7\",\n    \"category_id\": \"5f5c4b2d-9d7a-4f2d-a807-7b7a1c84ff10\",\n    \"title\": \"Exercise 30 minutes\",\n    \"description\": \"Morning workout\",\n    \"points\": 10,\n    \"is_active\": true\n  }\n}"
+            },
+            {
+              "name": "Error - Validation",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"category_id\": [\"The selected category id is invalid.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"title\": \"Exercise 45 minutes\",\n  \"description\": \"Evening workout\",\n  \"points\": 15,\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{task_id}}"
+              ]
+            },
+            "description": "Updates a user-owned task fields (category, title, description, points, is_active)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Task updated successfully\",\n  \"data\": {\n    \"id\": \"2cc90e58-9869-4d93-bfcc-e0771f570efa\",\n    \"title\": \"Exercise 45 minutes\",\n    \"description\": \"Evening workout\",\n    \"points\": 15,\n    \"is_active\": true\n  }\n}"
+            },
+            {
+              "name": "Error - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\"You are not allowed to perform this action.\"]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{task_id}}"
+              ]
+            },
+            "description": "Soft deletes a user-owned task."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Task deleted successfully\",\n  \"data\": []\n}"
+            },
+            {
+              "name": "Error - Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\"You are not allowed to perform this action.\"]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "category_id",
+      "value": ""
+    },
+    {
+      "key": "task_id",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });"
+        ]
+      }
+    }
+  ]
+}
