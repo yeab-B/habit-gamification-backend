@@ -30,29 +30,6 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasUuids, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'google_id',
-        'avatar',
-        'provider',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     /**
      * The primary key is not incrementing.
@@ -60,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var bool
      */
     public $incrementing = false;
+
 
     /**
      * The primary key type.
@@ -137,10 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function friendshipsSent()
     {
-        return $this->hasMany(
-            Friendship::class,
-            'user_id'
-        );
+        return $this->hasMany(Friendship::class, 'user_id');
     }
 
 
@@ -149,10 +124,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function friendshipsReceived()
     {
-        return $this->hasMany(
-            Friendship::class,
-            'friend_id'
-        );
+        return $this->hasMany(Friendship::class, 'friend_id');
     }
 
 
@@ -167,10 +139,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'user_id',
             'friend_id'
         )
-        ->wherePivot(
-            'status',
-            'accepted'
-        );
+        ->wherePivot('status', 'accepted');
     }
 
 
@@ -212,10 +181,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function freezesSent()
     {
-        return $this->hasMany(
-            Freeze::class,
-            'sender_id'
-        );
+        return $this->hasMany(Freeze::class, 'sender_id');
     }
 
 
@@ -224,10 +190,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function freezesReceived()
     {
-        return $this->hasMany(
-            Freeze::class,
-            'receiver_id'
-        );
+        return $this->hasMany(Freeze::class, 'receiver_id');
     }
 
 
@@ -240,9 +203,7 @@ class User extends Authenticatable implements MustVerifyEmail
             Achievement::class,
             'user_achievements'
         )
-        ->withPivot(
-            'earned_at'
-        );
+        ->withPivot('earned_at');
     }
 
 

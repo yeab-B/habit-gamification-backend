@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\EmailNotVerifiedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -9,7 +10,6 @@ use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use RuntimeException;
 
 class AuthController extends Controller
@@ -36,11 +36,16 @@ class AuthController extends Controller
     {
         try {
             $result = $this->authService->login($request->validated());
+        } catch (EmailNotVerifiedException $exception) {
+            return response()->json([
+                'status' => false,
+                'message' => $exception->getMessage(),
+            ], 403);
         } catch (RuntimeException $exception) {
             return response()->json([
                 'status' => false,
                 'message' => $exception->getMessage(),
-            ], $exception->getMessage() === 'Email address is not verified.' ? 403 : 422);
+            ], 422);
         }
 
         return response()->json([

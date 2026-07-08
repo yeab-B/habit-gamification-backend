@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\EmailNotVerifiedException;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\UploadedFile;
@@ -40,7 +41,7 @@ class AuthService
         }
 
         if (! $user->hasVerifiedEmail()) {
-            throw new RuntimeException('Email address is not verified.');
+            throw new EmailNotVerifiedException('Email address is not verified.');
         }
 
         return [

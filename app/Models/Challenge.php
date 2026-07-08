@@ -18,6 +18,13 @@ class Challenge extends Model
         'status'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
+    }
 
     // Challenge creator
     public function user()
