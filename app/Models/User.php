@@ -134,6 +134,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CoinTransaction::class);
     }
 
+    public function incomeSources()
+    {
+        return $this->hasMany(IncomeSource::class);
+    }
+
+    public function incomes()
+    {
+        return $this->hasMany(Income::class);
+    }
+
 
     /**
      * Friend requests sent by user

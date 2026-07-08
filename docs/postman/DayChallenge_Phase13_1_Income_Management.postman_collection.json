@@ -1,0 +1,340 @@
+{
+  "info": {
+    "name": "DayChallenge API - Phase 13.1 Income Management",
+    "description": "Finance / Income endpoints for income sources, income history, CRUD operations, and Asrat preparation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Finance / Income",
+      "item": [
+        {
+          "name": "Get Income Sources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/income-sources",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "income-sources"
+              ]
+            },
+            "description": "Returns default and user-created income sources available to the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Income sources retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{income_source_id}}\",\n      \"name\": \"Salary\",\n      \"description\": null,\n      \"is_default\": true,\n      \"created_at\": \"2026-07-08T10:00:00.000000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Income History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/incomes?source_id={{income_source_id}}&start_date=2026-07-01&end_date=2026-07-31",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "incomes"
+              ],
+              "query": [
+                {
+                  "key": "source_id",
+                  "value": "{{income_source_id}}",
+                  "description": "Optional income source filter"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-07-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-07-31"
+                }
+              ]
+            },
+            "description": "Returns paginated income records with optional source/date filters, summary totals, and income by source."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Income history retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{income_id}}\",\n      \"income_source\": {\n        \"id\": \"{{income_source_id}}\",\n        \"name\": \"Salary\"\n      },\n      \"amount\": \"10000.00\",\n      \"currency\": \"ETB\",\n      \"income_date\": \"2026-07-08\",\n      \"description\": \"Monthly salary\"\n    }\n  ],\n  \"summary\": {\n    \"total_income\": \"10000.00\",\n    \"income_count\": 1,\n    \"asrat\": \"1000.00\",\n    \"remaining_after_asrat\": \"9000.00\"\n  },\n  \"by_source\": [],\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 15,\n    \"total\": 1\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"The start date is not a valid date.\",\n  \"errors\": {\n    \"start_date\": [\n      \"The start date is not a valid date.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Income",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"income_source_id\": \"{{income_source_id}}\",\n  \"amount\": 10000,\n  \"currency\": \"ETB\",\n  \"income_date\": \"2026-07-08\",\n  \"description\": \"Monthly salary\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/incomes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "incomes"
+              ]
+            },
+            "description": "Creates an income record and returns Asrat and remaining balance calculations."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Income created successfully\",\n  \"data\": {\n    \"id\": \"{{income_id}}\",\n    \"amount\": \"10000.00\",\n    \"currency\": \"ETB\",\n    \"income_date\": \"2026-07-08\",\n    \"description\": \"Monthly salary\",\n    \"asrat\": \"1000.00\",\n    \"remaining_after_asrat\": \"9000.00\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"amount\": [\n      \"The amount field is required.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Income",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 12000,\n  \"income_date\": \"2026-07-09\",\n  \"description\": \"Updated salary\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/incomes/{{income_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "incomes",
+                "{{income_id}}"
+              ]
+            },
+            "description": "Updates an authenticated user's own income record."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Income updated successfully\",\n  \"data\": {\n    \"id\": \"{{income_id}}\",\n    \"amount\": \"12000.00\",\n    \"asrat\": \"1200.00\",\n    \"remaining_after_asrat\": \"10800.00\"\n  }\n}"
+            },
+            {
+              "name": "Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\n      \"You are not allowed to perform this action.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Income",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/incomes/{{income_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "incomes",
+                "{{income_id}}"
+              ]
+            },
+            "description": "Soft deletes an authenticated user's own income record."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Income deleted successfully\",\n  \"data\": []\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "income_id",
+      "value": ""
+    },
+    {
+      "key": "income_source_id",
+      "value": ""
+    }
+  ]
+}

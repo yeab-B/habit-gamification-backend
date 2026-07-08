@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\DailyProgressController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\FreezeController;
+use App\Http\Controllers\Api\IncomeController;
+use App\Http\Controllers\Api\IncomeSourceController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PromiseController;
 use App\Http\Controllers\Api\StreakController;
@@ -69,6 +71,12 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/freezes', [FreezeController::class, 'store']);
     Route::get('/promises', [PromiseController::class, 'index']);
     Route::post('/promises', [PromiseController::class, 'store']);
+    Route::get('/income-sources', [IncomeSourceController::class, 'index']);
+    Route::post('/income-sources', [IncomeSourceController::class, 'store']);
+    Route::get('/incomes', [IncomeController::class, 'index']);
+    Route::post('/incomes', [IncomeController::class, 'store']);
+    Route::put('/incomes/{income}', [IncomeController::class, 'update']);
+    Route::delete('/incomes/{income}', [IncomeController::class, 'destroy']);
 
     Route::get('/challenges', [ChallengeController::class, 'index']);
     Route::post('/challenges', [ChallengeController::class, 'store']);

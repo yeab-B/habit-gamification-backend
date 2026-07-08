@@ -17,10 +17,12 @@ use App\Listeners\CheckTaskAchievements;
 use App\Models\Category;
 use App\Models\Challenge;
 use App\Models\Friendship;
+use App\Models\Income;
 use App\Models\Task;
 use App\Policies\CategoryPolicy;
 use App\Policies\ChallengePolicy;
 use App\Policies\FriendshipPolicy;
+use App\Policies\IncomePolicy;
 use App\Policies\TaskPolicy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Category::class, CategoryPolicy::class);
         Gate::policy(Challenge::class, ChallengePolicy::class);
         Gate::policy(Friendship::class, FriendshipPolicy::class);
+        Gate::policy(Income::class, IncomePolicy::class);
         Gate::policy(Task::class, TaskPolicy::class);
 
         Event::listen(TaskCompleted::class, CheckTaskAchievements::class);
