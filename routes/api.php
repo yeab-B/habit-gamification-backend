@@ -19,6 +19,7 @@ use App\Finance\Controllers\BudgetController;
 use App\Finance\Controllers\ExpenseController;
 use App\Finance\Controllers\EmergencyFundController;
 use App\Finance\Controllers\InvestmentController;
+use App\Finance\Controllers\FinanceDashboardController;
 use App\Finance\Controllers\RewardWalletController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
@@ -125,4 +126,8 @@ Route::middleware('auth:sanctum')->group(function (): void {
     // Finance - Reward Wallet
     Route::get('/finance/reward-wallet', [RewardWalletController::class, 'show']);
     Route::get('/finance/reward-transactions', [RewardWalletController::class, 'transactions']);
+
+    // Finance - Dashboard & Analytics
+    Route::get('/finance/dashboard', [FinanceDashboardController::class, 'dashboard']);
+    Route::get('/finance/statistics', [FinanceDashboardController::class, 'statistics']);
 });

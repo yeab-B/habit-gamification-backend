@@ -17,6 +17,8 @@ use App\Finance\Events\InvestmentCreated;
 use App\Finance\Events\RewardEarned;
 use App\Finance\Listeners\CheckFinanceAchievements;
 use App\Finance\Listeners\GenerateBudgetAllocation;
+use App\Finance\Listeners\RefreshFinanceDashboardCache;
+use App\Finance\Listeners\UpdateFinanceAnalytics;
 use App\Finance\Listeners\UpdateFinanceStatistics;
 use App\Finance\Models\EmergencyFund;
 use App\Finance\Models\Expense;
@@ -94,5 +96,18 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(EmergencyFundCompleted::class, CheckFinanceAchievements::class);
         Event::listen(InvestmentCreated::class, CheckFinanceAchievements::class);
         Event::listen(RewardEarned::class, CheckFinanceAchievements::class);
+
+        // Finance dashboard & analytics listeners
+        Event::listen(BudgetAllocated::class, RefreshFinanceDashboardCache::class);
+        Event::listen(ExpenseCreated::class, RefreshFinanceDashboardCache::class);
+        Event::listen(EmergencyFundCompleted::class, RefreshFinanceDashboardCache::class);
+        Event::listen(InvestmentCreated::class, RefreshFinanceDashboardCache::class);
+        Event::listen(RewardEarned::class, RefreshFinanceDashboardCache::class);
+
+        Event::listen(BudgetAllocated::class, UpdateFinanceAnalytics::class);
+        Event::listen(ExpenseCreated::class, UpdateFinanceAnalytics::class);
+        Event::listen(EmergencyFundCompleted::class, UpdateFinanceAnalytics::class);
+        Event::listen(InvestmentCreated::class, UpdateFinanceAnalytics::class);
+        Event::listen(RewardEarned::class, UpdateFinanceAnalytics::class);
     }
 }
