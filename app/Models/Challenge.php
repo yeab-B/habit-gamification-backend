@@ -67,20 +67,6 @@ class Challenge extends Model
     }
 
 
-    // Completed tasks
-    public function completions()
-    {
-        return $this->hasMany(TaskCompletion::class);
-    }
-
-
-    // Daily check-ins
-    public function checkins()
-    {
-        return $this->hasMany(DailyCheckin::class);
-    }
-
-
     // Streak tracking
     public function streaks()
     {
