@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Challenge;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -60,7 +61,7 @@ class ChallengeApiTest extends TestCase
         $viewer = User::factory()->create();
         $category = Category::factory()->create(['user_id' => $owner->id]);
 
-        Challenge::create([
+        $challenge = Challenge::create([
             'user_id' => $owner->id,
             'title' => '30 Days Healthy Life',
             'description' => 'Improve my health habits',
@@ -68,7 +69,14 @@ class ChallengeApiTest extends TestCase
             'start_date' => now()->toDateString(),
             'end_date' => now()->addDays(30)->toDateString(),
             'status' => 'active',
-        ])->categories()->attach($category->id);
+        ]);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($viewer);
 
@@ -93,7 +101,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(30)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($viewer);
 
@@ -117,7 +131,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(10)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($owner);
 
@@ -145,7 +165,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(7)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($owner);
 
@@ -171,7 +197,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(21)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($participant);
 
@@ -200,7 +232,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(21)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($participant);
 
@@ -224,8 +262,22 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(21)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
-        $challenge->participants()->attach($participant->id, ['joined_at' => now()]);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('challenge_users')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'user_id' => $participant->id,
+            'status' => 'accepted',
+            'joined_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($participant);
 
@@ -253,7 +305,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(14)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($owner);
 
@@ -276,7 +334,13 @@ class ChallengeApiTest extends TestCase
             'end_date' => now()->addDays(14)->toDateString(),
             'status' => 'active',
         ]);
-        $challenge->categories()->attach($category->id);
+        DB::table('challenge_categories')->insert([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'challenge_id' => $challenge->id,
+            'category_id' => $category->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         Sanctum::actingAs($intruder);
 
