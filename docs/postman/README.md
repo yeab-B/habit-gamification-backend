@@ -1,34 +1,54 @@
-# DayChallenge Phase 1 Postman Kit
+# DayChallenge Postman Collection
 
-This folder contains Postman artifacts for testing and documenting the Phase 1 authentication/user-management APIs.
+This folder contains Postman artifacts for testing all DayChallenge API phases.
 
 ## Files
 
-- `DayChallenge-Phase1-Auth.postman_collection.json`
-- `DayChallenge-Phase1-Auth.postman_environment.json`
+| File | Description |
+|------|-------------|
+| `DayChallenge_API_Complete.postman_collection.json` | Merged collection — all 85+ endpoints across 13 phases |
+| `DayChallenge_Local.postman_environment.json` | Merged environment with all variables |
+| `*.postman_collection.json` (other) | Individual phase collections (kept for reference) |
+| `*.postman_environment.json` (other) | Per-phase environment files (kept for reference) |
 
-## Import Steps
+## Import
 
 1. Open Postman.
-2. Import both JSON files from this folder.
-3. Select the `DayChallenge Local` environment.
-4. Update `base_url` if your API host/port differs.
+2. Import `DayChallenge_API_Complete.postman_collection.json`.
+3. Import `DayChallenge_Local.postman_environment.json`.
+4. Select the `DayChallenge Local` environment.
+5. Update `base_url` if your API host/port differs.
 
-## Suggested Test Flow
+## Variables
 
-1. Register
-2. Verify Email (paste signed URL into `verify_url`)
-3. Login
-4. Get Profile
-5. Update Profile
-6. Change Password
-7. Forgot Password
-8. Reset Password
-9. Logout
-10. Delete Account
+| Variable | Type | Description |
+|----------|------|-------------|
+| `base_url` | default | API base URL (default: `http://localhost:8000`) |
+| `token` | secret | Bearer token (auto-populated by Register/Login scripts) |
+| `user_id` | default | Authenticated user ID |
+| `user_email` | default | User email |
+| `category_id` | default | Selected category UUID |
+| `task_id` | default | Selected task UUID |
+| `challenge_id` | default | Selected challenge UUID |
+| `google_access_token` | secret | Google OAuth token |
+| `password_reset_token` | secret | Token from reset email |
+| `verify_url` | default | Full signed verification URL |
 
-## Variable Notes
+## Folder Structure
 
-- `auth_token` is auto-populated by Register, Login, and Google Login test scripts.
-- `verify_url` must be the full signed verification URL from email.
-- `password_reset_token` must come from the reset-password email.
+```
+DayChallenge API - Complete
+├── Phase 1 — Auth & User Management    (13 requests)
+├── Phase 2 — Categories & Tasks        (10 requests)
+├── Phase 3 — Challenges                (8 requests)
+├── Phase 4 — Daily Progress            (4 requests)
+├── Phase 5 — Streaks                   (2 requests)
+├── Phase 6 — Coin System               (3 requests)
+├── Phase 7 — Friends                   (7 requests)
+├── Phase 9 — Promise System            (3 requests)
+├── Phase 10 — Freeze System            (3 requests)
+├── Phase 11 — Achievement System       (3 requests)
+├── Phase 12 — Dashboard & Statistics   (3 requests)
+├── Phase 13.1 — Income Management      (6 requests)
+└── Phase 13.2-13.6 — FFGR Core Finance (20 requests)
+```
