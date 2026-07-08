@@ -30,8 +30,8 @@ return new class extends Migration
 
 
             // Challenge where task was completed
-            $table->foreignId('challenge_id')
-                  ->constrained()
+            $table->foreignUuid('challenge_id')
+                ->constrained('challenges')
                   ->cascadeOnDelete();
 
 

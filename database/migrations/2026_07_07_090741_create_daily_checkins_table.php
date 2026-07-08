@@ -24,8 +24,8 @@ return new class extends Migration
 
 
             // Challenge progress belongs to
-            $table->foreignId('challenge_id')
-                  ->constrained()
+            $table->foreignUuid('challenge_id')
+                ->constrained('challenges')
                   ->cascadeOnDelete();
 
 

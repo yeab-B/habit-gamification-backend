@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('challenge_categories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
-            $table->foreignId('challenge_id')
-                ->constrained()
+            $table->foreignUuid('challenge_id')
+                ->constrained('challenges')
                 ->cascadeOnDelete();
 
             $table->foreignUuid('category_id')

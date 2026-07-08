@@ -6,64 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('challenges', function (Blueprint $table) {
+            $table->uuid('id')->primary();
 
-            $table->id();
-
-
-            // User who created the challenge
             $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
+                ->cascadeOnDelete();
 
-
-            // Challenge name
-            // Example: 30 Days Better Me
             $table->string('title');
-
-
-            // Challenge explanation
-            $table->text('description')
-                  ->nullable();
-
-
-            // Number of challenge days
-            // Example: 7, 21, 30
-            $table->integer('duration');
-
-
-            // Challenge starting date
-            $table->date('start_date');
-
-
-            // Challenge ending date
-            $table->date('end_date');
-
-
-            // Who can see/join the challenge
-            $table->enum('visibility', [
-                'private',
-                'friends',
-                'public'
-            ])
-            ->default('private');
-
-
-            // Challenge current status
-            $table->enum('status', [
-                'active',
-                'completed',
-                'cancelled'
-            ])
-            ->default('active');
-
+            $table->text('description')->nullable();
+            $table->integer('duration_days');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('status')->default('active');
 
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }

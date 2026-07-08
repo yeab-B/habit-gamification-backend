@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('challenge_users', function (Blueprint $table) {
 
-            $table->id();
+            $table->uuid('id')->primary();
 
 
             // Challenge that user joined
-            $table->foreignId('challenge_id')
-                  ->constrained()
+            $table->foreignUuid('challenge_id')
+                  ->constrained('challenges')
                   ->cascadeOnDelete();
 
 
