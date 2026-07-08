@@ -1,0 +1,562 @@
+{
+  "info": {
+    "name": "DayChallenge API - Phase 13.2-13.6 FFGR Core Finance",
+    "description": "FFGR Finance Engine: Budget (Asrat + Allocation), Expenses (Needs), Emergency Fund, Investments (Growth), and Reward Wallet. Every income is tithed (Asrat 10%), then the remaining 90% is split into Foundation (Needs 50% + Emergency 20%), Growth (Investments 20%), and Reward (10%).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Budget",
+      "item": [
+        {
+          "name": "Get Budget (Current Month)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/budget",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "budget"]
+            },
+            "description": "Returns the current month's budget overview: settings, aggregated totals (income, asrat, needs, emergency, investment, reward), and all allocations."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Budget retrieved successfully\",\n  \"data\": {\n    \"settings\": {\n      \"id\": \"{{budget_settings_id}}\",\n      \"user_id\": \"{{user_id}}\",\n      \"asrat_percentage\": \"10.00\",\n      \"needs_percentage\": \"50.00\",\n      \"emergency_percentage\": \"20.00\",\n      \"investment_percentage\": \"20.00\",\n      \"reward_percentage\": \"10.00\"\n    },\n    \"month\": \"2026-07\",\n    \"totals\": {\n      \"income\": \"50000.00\",\n      \"asrat\": \"5000.00\",\n      \"needs\": \"22500.00\",\n      \"emergency\": \"9000.00\",\n      \"investment\": \"9000.00\",\n      \"reward\": \"4500.00\"\n    },\n    \"allocations\": []\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Budget Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asrat_percentage\": 15,\n  \"needs_percentage\": 40,\n  \"emergency_percentage\": 25,\n  \"investment_percentage\": 20,\n  \"reward_percentage\": 15\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/budget/settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "budget", "settings"]
+            },
+            "description": "Customize allocation percentages. Defaults: Asrat 10%, Needs 50%, Emergency 20%, Investment 20%, Reward 10%. Percentages should sum to 100 for the remaining balance after Asrat."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Budget settings updated successfully\",\n  \"data\": {\n    \"id\": \"{{budget_settings_id}}\",\n    \"user_id\": \"{{user_id}}\",\n    \"asrat_percentage\": \"15.00\",\n    \"needs_percentage\": \"40.00\",\n    \"emergency_percentage\": \"25.00\",\n    \"investment_percentage\": \"20.00\",\n    \"reward_percentage\": \"15.00\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"asrat_percentage\": [\n      \"The asrat percentage must be between 0 and 100.\"\n    ]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "Get Expenses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/expenses",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "expenses"]
+            },
+            "description": "Returns paginated expenses with category info and current month spending summary."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Expenses retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{expense_id}}\",\n      \"category\": \"Food\",\n      \"amount\": \"3000.00\",\n      \"expense_date\": \"2026-07-08\",\n      \"description\": \"Lunch\"\n    }\n  ],\n  \"spending\": {\n    \"month\": \"2026-07\",\n    \"spent\": \"3000.00\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{expense_category_id}}\",\n  \"amount\": 3000,\n  \"expense_date\": \"2026-07-08\",\n  \"description\": \"Lunch\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/expenses",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "expenses"]
+            },
+            "description": "Creates an expense that reduces the Needs budget allocation. Category must be a valid ExpenseCategory."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Expense created successfully\",\n  \"data\": {\n    \"id\": \"{{expense_id}}\",\n    \"category\": \"Food\",\n    \"amount\": \"3000.00\",\n    \"expense_date\": \"2026-07-08\",\n    \"description\": \"Lunch\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"category_id\": [\n      \"The selected category id is invalid.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Expense",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{expense_category_id}}\",\n  \"amount\": 3500,\n  \"expense_date\": \"2026-07-08\",\n  \"description\": \"Updated lunch expense\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/expenses/{{expense_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "expenses", "{{expense_id}}"]
+            },
+            "description": "Updates an authenticated user's own expense record."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Expense updated successfully\",\n  \"data\": {\n    \"id\": \"{{expense_id}}\",\n    \"category\": \"Food\",\n    \"amount\": \"3500.00\",\n    \"expense_date\": \"2026-07-08\",\n    \"description\": \"Updated lunch expense\"\n  }\n}"
+            },
+            {
+              "name": "Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\n      \"You are not allowed to perform this action.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Expense",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/expenses/{{expense_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "expenses", "{{expense_id}}"]
+            },
+            "description": "Soft deletes an authenticated user's own expense record."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Expense deleted successfully\",\n  \"data\": []\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Emergency Fund",
+      "item": [
+        {
+          "name": "Get Emergency Funds",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/emergency-funds",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "emergency-funds"]
+            },
+            "description": "Returns all emergency funds for the authenticated user, each with progress percentage and transactions."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Emergency funds retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{emergency_fund_id}}\",\n      \"goal_amount\": \"100000.00\",\n      \"current_amount\": \"40000.00\",\n      \"status\": \"active\",\n      \"progress_percentage\": 40\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Emergency Fund",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_amount\": 100000,\n  \"current_amount\": 0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/emergency-funds",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "emergency-funds"]
+            },
+            "description": "Creates a new emergency fund goal. Initial current_amount is optional (defaults to 0)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Emergency fund created successfully\",\n  \"data\": {\n    \"id\": \"{{emergency_fund_id}}\",\n    \"goal_amount\": \"100000.00\",\n    \"current_amount\": \"0.00\",\n    \"status\": \"active\",\n    \"progress_percentage\": 0\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Deposit to Emergency Fund",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 40000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/emergency-funds/{{emergency_fund_id}}/deposit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "emergency-funds", "{{emergency_fund_id}}", "deposit"]
+            },
+            "description": "Records a deposit to the emergency fund. If current_amount meets or exceeds goal_amount, the fund is auto-completed."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Emergency fund deposit recorded successfully\",\n  \"data\": {\n    \"id\": \"{{emergency_fund_id}}\",\n    \"goal_amount\": \"100000.00\",\n    \"current_amount\": \"40000.00\",\n    \"status\": \"active\",\n    \"progress_percentage\": 40\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"amount\": [\n      \"The amount field is required.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Withdraw from Emergency Fund",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/emergency-funds/{{emergency_fund_id}}/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "emergency-funds", "{{emergency_fund_id}}", "withdraw"]
+            },
+            "description": "Records a withdrawal. Balance cannot go below zero."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Emergency fund withdrawal recorded successfully\",\n  \"data\": {\n    \"id\": \"{{emergency_fund_id}}\",\n    \"goal_amount\": \"100000.00\",\n    \"current_amount\": \"30000.00\",\n    \"status\": \"active\",\n    \"progress_percentage\": 30\n  }\n}"
+            },
+            {
+              "name": "Business Rule Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"Emergency fund balance cannot go negative.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Investments",
+      "item": [
+        {
+          "name": "Get Portfolio",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/investments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "investments"]
+            },
+            "description": "Returns the user's investment portfolio with total value and individual investment details."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Investments retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{investment_id}}\",\n      \"name\": \"Tech Startup\",\n      \"type\": \"Business\",\n      \"description\": \"Seed round investment\",\n      \"total_amount\": \"50000.00\"\n    }\n  ],\n  \"portfolio\": {\n    \"total_value\": \"50000.00\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Investment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Startup\",\n  \"type\": \"Business\",\n  \"description\": \"Seed round investment\",\n  \"total_amount\": 50000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/investments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "investments"]
+            },
+            "description": "Creates a new investment. Type must be one of: Business, Stocks, Crypto, Education, Courses, Books, Savings."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Investment created successfully\",\n  \"data\": {\n    \"id\": \"{{investment_id}}\",\n    \"name\": \"Tech Startup\",\n    \"type\": \"Business\",\n    \"description\": \"Seed round investment\",\n    \"total_amount\": \"50000.00\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"type\": [\n      \"The selected type is invalid.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Investment Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"deposit\",\n  \"amount\": 10000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/investments/{{investment_id}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "investments", "{{investment_id}}", "transactions"]
+            },
+            "description": "Records a transaction (deposit, withdraw, profit, loss) on an investment. Updates total_amount automatically."
+          },
+          "response": [
+            {
+              "name": "Success - Deposit",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Investment transaction recorded successfully\",\n  \"data\": {\n    \"id\": \"{{investment_id}}\",\n    \"name\": \"Tech Startup\",\n    \"type\": \"Business\",\n    \"description\": \"Seed round investment\",\n    \"total_amount\": \"60000.00\"\n  }\n}"
+            },
+            {
+              "name": "Business Rule Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": false,\n  \"message\": \"Investment balance cannot go negative.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reward Wallet",
+      "item": [
+        {
+          "name": "Get Reward Wallet",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/reward-wallet",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "reward-wallet"]
+            },
+            "description": "Returns the current reward wallet balance (available and locked). Wallet is auto-created on first access."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Reward wallet retrieved successfully\",\n  \"data\": {\n    \"id\": \"{{reward_wallet_id}}\",\n    \"available_balance\": \"5000.00\",\n    \"locked_balance\": \"0.00\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Reward Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/reward-transactions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "finance", "reward-transactions"]
+            },
+            "description": "Returns paginated transaction history for the reward wallet (earn and spend events)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Reward transactions retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{reward_transaction_id}}\",\n      \"type\": \"earn\",\n      \"amount\": \"500.00\",\n      \"source\": \"challenge\",\n      \"description\": \"Completed 30 day challenge\",\n      \"created_at\": \"2026-07-08T10:00:00.000000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "budget_settings_id",
+      "value": ""
+    },
+    {
+      "key": "expense_id",
+      "value": ""
+    },
+    {
+      "key": "expense_category_id",
+      "value": ""
+    },
+    {
+      "key": "emergency_fund_id",
+      "value": ""
+    },
+    {
+      "key": "investment_id",
+      "value": ""
+    },
+    {
+      "key": "reward_wallet_id",
+      "value": ""
+    },
+    {
+      "key": "reward_transaction_id",
+      "value": ""
+    }
+  ]
+}

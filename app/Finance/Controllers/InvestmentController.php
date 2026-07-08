@@ -10,6 +10,7 @@ use App\Finance\Services\InvestmentService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 
 class InvestmentController extends Controller
 {
@@ -42,10 +43,19 @@ class InvestmentController extends Controller
     {
         abort_unless($investment->user_id === $request->user()->id, 403);
 
+        try {
+            $result = $this->investmentService->addTransaction($investment, $request->validated());
+        } catch (RuntimeException $exception) {
+            return response()->json([
+                'status' => false,
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
         return response()->json([
             'status' => true,
             'message' => 'Investment transaction recorded successfully',
-            'data' => new InvestmentResource($this->investmentService->addTransaction($investment, $request->validated())),
+            'data' => new InvestmentResource($result),
         ]);
     }
 }

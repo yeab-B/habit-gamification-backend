@@ -15,6 +15,11 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PromiseController;
 use App\Http\Controllers\Api\StreakController;
 use App\Http\Controllers\Api\TaskController;
+use App\Finance\Controllers\BudgetController;
+use App\Finance\Controllers\ExpenseController;
+use App\Finance\Controllers\EmergencyFundController;
+use App\Finance\Controllers\InvestmentController;
+use App\Finance\Controllers\RewardWalletController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -95,4 +100,29 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/tasks', [TaskController::class, 'store']);
     Route::put('/tasks/{task}', [TaskController::class, 'update']);
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy']);
+
+    // Finance - Budget
+    Route::get('/finance/budget', [BudgetController::class, 'show']);
+    Route::post('/finance/budget/settings', [BudgetController::class, 'settings']);
+
+    // Finance - Expenses
+    Route::get('/finance/expenses', [ExpenseController::class, 'index']);
+    Route::post('/finance/expenses', [ExpenseController::class, 'store']);
+    Route::put('/finance/expenses/{expense}', [ExpenseController::class, 'update']);
+    Route::delete('/finance/expenses/{expense}', [ExpenseController::class, 'destroy']);
+
+    // Finance - Emergency Fund
+    Route::get('/finance/emergency-funds', [EmergencyFundController::class, 'index']);
+    Route::post('/finance/emergency-funds', [EmergencyFundController::class, 'store']);
+    Route::post('/finance/emergency-funds/{fund}/deposit', [EmergencyFundController::class, 'deposit']);
+    Route::post('/finance/emergency-funds/{fund}/withdraw', [EmergencyFundController::class, 'withdraw']);
+
+    // Finance - Investments
+    Route::get('/finance/investments', [InvestmentController::class, 'index']);
+    Route::post('/finance/investments', [InvestmentController::class, 'store']);
+    Route::post('/finance/investments/{investment}/transactions', [InvestmentController::class, 'transaction']);
+
+    // Finance - Reward Wallet
+    Route::get('/finance/reward-wallet', [RewardWalletController::class, 'show']);
+    Route::get('/finance/reward-transactions', [RewardWalletController::class, 'transactions']);
 });

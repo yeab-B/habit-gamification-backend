@@ -2,10 +2,36 @@
 
 namespace App\Finance\Listeners;
 
+use App\Finance\Events\BudgetAllocated;
+use App\Finance\Events\EmergencyFundCompleted;
+use App\Finance\Events\InvestmentCreated;
+use App\Finance\Events\RewardEarned;
+use App\Models\User;
+use App\Services\AchievementService;
+
 class CheckFinanceAchievements
 {
-    public function handle(object $event): void
+    public function __construct(private readonly AchievementService $achievementService)
     {
-        // Future hook for finance achievement checks.
+    }
+
+    public function handle(
+        BudgetAllocated|EmergencyFundCompleted|InvestmentCreated|RewardEarned $event
+    ): void {
+        $user = match ($event::class) {
+            BudgetAllocated::class => $event->allocation->user,
+            EmergencyFundCompleted::class => $event->fund->user,
+            InvestmentCreated::class => $event->investment->user,
+            RewardEarned::class => $event->wallet->user,
+        };
+
+        $conditionType = match ($event::class) {
+            BudgetAllocated::class => 'budgets_allocated',
+            EmergencyFundCompleted::class => 'emergency_goals_completed',
+            InvestmentCreated::class => 'investments_created',
+            RewardEarned::class => 'reward_earned',
+        };
+
+        $this->achievementService->checkAchievements($user, $conditionType);
     }
 }

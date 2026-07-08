@@ -127,6 +127,20 @@ class AchievementService
                 ->where('user_id', $user->id)
                 ->where('status', 'fulfilled')
                 ->count(),
+            'budgets_allocated' => \App\Finance\Models\BudgetAllocation::query()
+                ->where('user_id', $user->id)
+                ->count(),
+            'emergency_goals_completed' => \App\Finance\Models\EmergencyFund::query()
+                ->where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->count(),
+            'investments_created' => \App\Finance\Models\Investment::query()
+                ->where('user_id', $user->id)
+                ->count(),
+            'reward_earned' => (int) \App\Finance\Models\RewardTransaction::query()
+                ->where('user_id', $user->id)
+                ->where('type', 'earn')
+                ->sum('amount'),
             default => 0,
         };
     }
