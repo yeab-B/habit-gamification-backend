@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "DayChallenge API - Phase 11 Achievement System",
+    "description": "Phase 11 Achievement System endpoints for listing active achievements and the authenticated user's unlocked achievements.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Achievements",
+      "item": [
+        {
+          "name": "Achievement List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/achievements",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "achievements"
+              ]
+            },
+            "description": "Returns all active achievement definitions. Achievements are unlocked automatically by system events and are not manually claimed."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/achievements",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "achievements"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": true,\n  \"message\": \"Achievements retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"9a1b2c3d-4e5f-6789-abcd-ef0123456789\",\n      \"name\": \"First Task\",\n      \"slug\": \"first-task\",\n      \"description\": \"Complete your first task.\",\n      \"icon\": \"trophy\",\n      \"category\": \"task\",\n      \"condition_type\": \"tasks_completed\",\n      \"condition_value\": 1,\n      \"reward_coins\": 10\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error - Unauthenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "My Achievements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/my-achievements?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "my-achievements"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Returns paginated achievements unlocked by the authenticated user, including the achievement definition, earned date, and reward coins paid."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/my-achievements?page=1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "my-achievements"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": true,\n  \"message\": \"User achievements retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"8b1b2c3d-4e5f-6789-abcd-ef0123456789\",\n      \"achievement\": {\n        \"id\": \"9a1b2c3d-4e5f-6789-abcd-ef0123456789\",\n        \"name\": \"First Task\",\n        \"slug\": \"first-task\",\n        \"description\": \"Complete your first task.\",\n        \"icon\": \"trophy\",\n        \"category\": \"task\",\n        \"condition_type\": \"tasks_completed\",\n        \"condition_value\": 1,\n        \"reward_coins\": 10\n      },\n      \"earned_at\": \"2026-07-12T09:00:00.000000Z\",\n      \"reward_coins\": 10\n    }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 15,\n    \"total\": 1\n  }\n}"
+            },
+            {
+              "name": "Error - Unauthenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

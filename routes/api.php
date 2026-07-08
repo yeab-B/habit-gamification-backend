@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChallengeController;
 use App\Http\Controllers\Api\CoinController;
@@ -53,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('/streaks/current', [StreakController::class, 'current']);
     Route::get('/coins', [CoinController::class, 'balance']);
     Route::get('/coin-transactions', [CoinController::class, 'transactions']);
+    Route::get('/achievements', [AchievementController::class, 'index']);
+    Route::get('/my-achievements', [AchievementController::class, 'myAchievements']);
     Route::get('/users/search', [FriendController::class, 'search']);
     Route::get('/friends', [FriendController::class, 'index']);
     Route::post('/friends/request', [FriendController::class, 'sendRequest']);

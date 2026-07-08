@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class AchievementResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'icon' => $this->icon,
+            'category' => $this->category,
+            'condition_type' => $this->condition_type,
+            'condition_value' => $this->condition_value,
+            'reward_coins' => $this->reward_coins,
+        ];
+    }
+}

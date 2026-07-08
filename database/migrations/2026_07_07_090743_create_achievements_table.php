@@ -13,14 +13,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('achievements', function (Blueprint $table) {
-
-            $table->id();
+            $table->uuid('id')->primary();
 
 
             // Achievement name
             // Example:
             // First Challenge Completed
             $table->string('name');
+
+            $table->string('slug')
+                  ->unique();
 
 
             // Explanation
@@ -33,31 +35,22 @@ return new class extends Migration
                   ->nullable();
 
 
-            // Achievement category
-            $table->enum('type', [
+            $table->string('category');
 
-                'streak',
-                'challenge',
-                'task',
-                'coin',
-                'social'
+            $table->string('condition_type');
 
-            ]);
-
-
-            // Requirement value
-            // Example:
-            // 30 for 30 day streak
-            $table->integer('requirement')
-                  ->nullable();
+            $table->integer('condition_value');
 
 
             // Reward coins
             $table->integer('reward_coins')
                   ->default(0);
 
+            $table->boolean('is_active')
+                  ->default(true);
 
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }

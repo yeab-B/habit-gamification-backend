@@ -13,8 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_achievements', function (Blueprint $table) {
-
-            $table->id();
+            $table->uuid('id')->primary();
 
 
             // User who earned achievement
@@ -24,13 +23,16 @@ return new class extends Migration
 
 
             // Achievement unlocked
-            $table->foreignId('achievement_id')
-                  ->constrained()
+            $table->foreignUuid('achievement_id')
+                  ->constrained('achievements')
                   ->cascadeOnDelete();
 
 
             // Date achievement was earned
             $table->timestamp('earned_at');
+
+            $table->integer('reward_coins')
+                  ->default(0);
 
 
             $table->timestamps();

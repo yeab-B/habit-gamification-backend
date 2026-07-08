@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\CoinsEarned;
 use App\Models\CoinTransaction;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -59,7 +60,7 @@ class CoinService
                 throw new RuntimeException('Insufficient coin balance.');
             }
 
-            return CoinTransaction::query()->create([
+            $transaction = CoinTransaction::query()->create([
                 'user_id' => $user->id,
                 'type' => $type,
                 'source' => $source,
@@ -68,6 +69,12 @@ class CoinService
                 'description' => $description,
                 'reference_id' => $referenceId,
             ]);
+
+            if (in_array($type, self::CREDIT_TYPES, true)) {
+                CoinsEarned::dispatch($transaction->load('user'));
+            }
+
+            return $transaction;
         });
     }
 
