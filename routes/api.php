@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ChallengeController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -39,6 +40,14 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('/challenges', [ChallengeController::class, 'index']);
+    Route::post('/challenges', [ChallengeController::class, 'store']);
+    Route::get('/challenges/{challenge}', [ChallengeController::class, 'show']);
+    Route::put('/challenges/{challenge}', [ChallengeController::class, 'update']);
+    Route::delete('/challenges/{challenge}', [ChallengeController::class, 'destroy']);
+    Route::post('/challenges/{challenge}/join', [ChallengeController::class, 'join']);
+    Route::delete('/challenges/{challenge}/leave', [ChallengeController::class, 'leave']);
+
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);

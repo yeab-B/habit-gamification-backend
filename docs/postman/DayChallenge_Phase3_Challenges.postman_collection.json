@@ -1,0 +1,204 @@
+{
+  "info": {
+    "_postman_id": "ab7f9f57-d5b4-4db5-8f5d-96f9a7d1f501",
+    "name": "DayChallenge API - Phase 3 Challenge Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Phase 3 challenge management APIs. Every protected request uses Sanctum bearer token authentication."
+  },
+  "item": [
+    {
+      "name": "Challenges",
+      "item": [
+        {
+          "name": "Get Challenges",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/challenges",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges"]
+            },
+            "description": "Return challenges available for the authenticated user. Includes owner, categories count, and participants count."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Challenges retrieved successfully\",\n  \"data\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Challenge",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"30 Days Fitness\",\n  \"description\": \"Build fitness habits\",\n  \"duration_days\": 30,\n  \"category_ids\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/challenges",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges"]
+            },
+            "description": "Create a challenge and attach selected categories owned by the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Challenge created successfully\",\n  \"data\": {}\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Challenge Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/challenges/{{challenge_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges", "{{challenge_id}}"]
+            },
+            "description": "View challenge details including owner, categories, participants, and timing fields."
+          }
+        },
+        {
+          "name": "Update Challenge",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"30 Days Fitness Plus\",\n  \"description\": \"Updated challenge description\",\n  \"duration_days\": 45,\n  \"category_ids\": [\"{{category_id}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/challenges/{{challenge_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges", "{{challenge_id}}"]
+            },
+            "description": "Update a challenge owned by the authenticated user."
+          }
+        },
+        {
+          "name": "Delete Challenge",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/challenges/{{challenge_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges", "{{challenge_id}}"]
+            },
+            "description": "Soft delete a challenge and remove related relationships."
+          }
+        },
+        {
+          "name": "Join Challenge",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/challenges/{{challenge_id}}/join",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges", "{{challenge_id}}", "join"]
+            },
+            "description": "Join an existing challenge and store joined_at on the pivot record."
+          }
+        },
+        {
+          "name": "Leave Challenge",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{token}}", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/challenges/{{challenge_id}}/leave",
+              "host": ["{{base_url}}"],
+              "path": ["api", "challenges", "{{challenge_id}}", "leave"]
+            },
+            "description": "Leave a challenge you joined. Challenge owners cannot leave their own challenge."
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" },
+    { "key": "challenge_id", "value": "" },
+    { "key": "category_id", "value": "" }
+  ]
+}
