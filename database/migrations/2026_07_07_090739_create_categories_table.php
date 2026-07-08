@@ -6,14 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-
-            $table->id();
+            $table->uuid('id')->primary();
 
             // Category owner
             $table->foreignUuid('user_id')
@@ -30,6 +26,10 @@ return new class extends Migration
             $table->string('icon')
                   ->nullable();
 
+            // Color for UI representation
+            $table->string('color')
+                ->nullable();
+
 
             // Additional information
             $table->text('description')
@@ -37,14 +37,11 @@ return new class extends Migration
 
 
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }
 
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('categories');
