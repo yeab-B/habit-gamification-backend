@@ -1,0 +1,128 @@
+{
+  "info": {
+    "_postman_id": "fd2a0bfb-5ab5-47d1-8b4b-3ed0df0ab4e9",
+    "name": "DayChallenge API - Phase 4 Daily Progress",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Phase 4 APIs for daily progress tracking, task completion, and daily summaries."
+  },
+  "item": [
+    {
+      "name": "Daily Progress",
+      "item": [
+        {
+          "name": "Complete Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/complete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "complete"]
+            },
+            "description": "Mark an owned task as completed for the current day."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"status\": true,\n  \"message\": \"Task completed successfully\",\n  \"data\": {}\n}"
+            },
+            {
+              "name": "Duplicate",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "body": "{\n  \"status\": false,\n  \"message\": \"Task already completed today\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Daily Check-ins",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/daily-checkins",
+              "host": ["{{base_url}}"],
+              "path": ["api", "daily-checkins"]
+            },
+            "description": "Return the authenticated user's daily check-in history."
+          }
+        },
+        {
+          "name": "Get Today's Progress",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/today",
+              "host": ["{{base_url}}"],
+              "path": ["api", "today"]
+            },
+            "description": "Return today's completed tasks, remaining tasks, earned points, and completion percentage."
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "task_id",
+      "value": ""
+    }
+  ]
+}

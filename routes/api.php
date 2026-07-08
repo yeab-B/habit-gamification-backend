@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChallengeController;
+use App\Http\Controllers\Api\DailyProgressController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -40,6 +41,10 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
+    Route::post('/tasks/{task}/complete', [DailyProgressController::class, 'completeTask']);
+    Route::get('/daily-checkins', [DailyProgressController::class, 'checkins']);
+    Route::get('/today', [DailyProgressController::class, 'today']);
+
     Route::get('/challenges', [ChallengeController::class, 'index']);
     Route::post('/challenges', [ChallengeController::class, 'store']);
     Route::get('/challenges/{challenge}', [ChallengeController::class, 'show']);
