@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -119,9 +120,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * User streak records
      */
-    public function streaks()
+    public function streak(): HasOne
     {
-        return $this->hasMany(Streak::class);
+        return $this->hasOne(Streak::class);
     }
 
 
@@ -139,7 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function friendshipsSent()
     {
-        return $this->hasMany(Friendship::class, 'user_id');
+        return $this->hasMany(Friendship::class, 'sender_id');
     }
 
 
@@ -148,7 +149,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function friendshipsReceived()
     {
-        return $this->hasMany(Friendship::class, 'friend_id');
+        return $this->hasMany(Friendship::class, 'receiver_id');
     }
 
 
@@ -160,8 +161,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(
             User::class,
             'friendships',
-            'user_id',
-            'friend_id'
+            'sender_id',
+            'receiver_id'
         )
         ->wherePivot('status', 'accepted');
     }

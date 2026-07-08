@@ -49,13 +49,15 @@ class DailyProgressTest extends TestCase
                 ->exists()
         );
 
-        $this->assertDatabaseHas('daily_checkins', [
-            'user_id' => $user->id,
-            'date' => now()->toDateString(),
-            'tasks_completed' => 1,
-            'total_points' => 10,
-            'is_completed' => true,
-        ]);
+        $this->assertTrue(
+            DailyCheckin::query()
+                ->where('user_id', $user->id)
+                ->whereDate('date', now()->toDateString())
+                ->where('tasks_completed', 1)
+                ->where('total_points', 10)
+                ->where('is_completed', true)
+                ->exists()
+        );
     }
 
     public function test_user_cannot_complete_task_twice(): void

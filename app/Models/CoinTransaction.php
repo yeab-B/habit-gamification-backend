@@ -2,39 +2,42 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CoinTransaction extends Model
 {
+    use HasFactory, HasUuids, SoftDeletes;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
         'user_id',
-        'challenge_id',
-        'task_id',
         'type',
+        'source',
         'amount',
-        'description'
+        'balance_after',
+        'description',
+        'reference_id',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+            'balance_after' => 'integer',
+            'deleted_at' => 'datetime',
+        ];
+    }
 
     // Transaction owner
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
-
-    // Related challenge
-    public function challenge()
-    {
-        return $this->belongsTo(Challenge::class);
-    }
-
-
-    // Related task
-    public function task()
-    {
-        return $this->belongsTo(Task::class);
-    }
-
 }

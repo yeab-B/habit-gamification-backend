@@ -13,46 +13,29 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('streaks', function (Blueprint $table) {
-
-            $table->id();
-
+            $table->uuid('id')->primary();
 
             // User who owns streak
             $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
-
-
-            // Challenge this streak belongs to
-            $table->foreignUuid('challenge_id')
-                ->constrained('challenges')
-                  ->cascadeOnDelete();
-
+                ->cascadeOnDelete();
 
             // Current consecutive days
             $table->integer('current_streak')
-                  ->default(0);
-
+                ->default(0);
 
             // User's best streak record
             $table->integer('longest_streak')
-                  ->default(0);
+                ->default(0);
 
-
-            // Last day user completed challenge
+            // Last day user completed required daily activity
             $table->date('last_completed_date')
-                  ->nullable();
-
+                ->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
-
-            // One streak per user per challenge
-            $table->unique([
-                'user_id',
-                'challenge_id'
-            ]);
-
+            $table->unique('user_id');
         });
     }
 

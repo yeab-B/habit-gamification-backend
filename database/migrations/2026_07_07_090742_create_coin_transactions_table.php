@@ -13,58 +13,38 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('coin_transactions', function (Blueprint $table) {
-
-            $table->id();
-
+            $table->uuid('id')->primary();
 
             // User whose balance changed
             $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
-
-
-            // Related challenge
-            $table->foreignUuid('challenge_id')
-                  ->nullable()
-                ->constrained('challenges')
-                  ->cascadeOnDelete();
-
-
-            // Related task
-            $table->foreignUuid('task_id')
-                  ->nullable()
-                ->constrained('tasks')
-                  ->cascadeOnDelete();
+                ->cascadeOnDelete();
 
 
             // Transaction type
             $table->enum('type', [
-
-                // Earned coins
-                'earned',
-
-                // Lost coins
-                'lost',
-
-                // Transfer to another user
-                'transfer',
-
-                // Freeze cost
-                'freeze'
-
+                'earn',
+                'spend',
+                'bonus',
+                'penalty',
             ]);
 
+            $table->string('source');
 
-            // Positive or negative amount
+            // Positive value only. Type determines whether it adds or deducts.
             $table->integer('amount');
+            $table->integer('balance_after');
 
 
             // Explanation
-            $table->string('description')
-                  ->nullable();
+            $table->text('description')
+                ->nullable();
 
+            $table->uuid('reference_id')
+                ->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }

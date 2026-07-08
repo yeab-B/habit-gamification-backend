@@ -13,45 +13,44 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('friendships', function (Blueprint $table) {
-
-            $table->id();
-
+            $table->uuid('id')->primary();
 
             // User who sends request
-            $table->foreignUuid('user_id')
-                  ->constrained('users')
-                  ->cascadeOnDelete();
+            $table->foreignUuid('sender_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
 
             // User who receives request
-            $table->foreignUuid('friend_id')
-                  ->constrained('users')
-                  ->cascadeOnDelete();
+            $table->foreignUuid('receiver_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
 
             // Friendship status
             $table->enum('status', [
-
                 'pending',
                 'accepted',
-                'blocked'
+                'rejected',
+                'blocked',
+            ])->default('pending');
 
-            ])
-            ->default('pending');
 
-
-            // When friendship accepted
-            $table->timestamp('accepted_at')
-                  ->nullable();
+            // When request was accepted or rejected
+            $table->timestamp('responded_at')
+                ->nullable();
 
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['sender_id', 'receiver_id']);
 
 
             // Prevent duplicate requests
             $table->unique([
-                'user_id',
-                'friend_id'
+                'sender_id',
+                'receiver_id',
             ]);
 
         });

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\TaskCompleted;
 use App\Models\DailyCheckin;
 use App\Models\Task;
 use App\Models\TaskCompletion;
@@ -56,7 +57,11 @@ class DailyProgressService
                 'is_completed' => true,
             ])->save();
 
-            return $completion->load(['task', 'user']);
+            $completion->load(['task', 'user']);
+
+            TaskCompleted::dispatch($completion);
+
+            return $completion;
         });
     }
 
@@ -83,7 +88,7 @@ class DailyProgressService
             ->count();
 
         $earnedPoints = TaskCompletion::query()
-            ->where('user_id', $user->id)
+            ->where('task_completions.user_id', $user->id)
             ->whereDate('completion_date', $today)
             ->join('tasks', 'task_completions.task_id', '=', 'tasks.id')
             ->sum('tasks.points');

@@ -3,8 +3,10 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChallengeController;
+use App\Http\Controllers\Api\CoinController;
 use App\Http\Controllers\Api\DailyProgressController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\StreakController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +46,10 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/tasks/{task}/complete', [DailyProgressController::class, 'completeTask']);
     Route::get('/daily-checkins', [DailyProgressController::class, 'checkins']);
     Route::get('/today', [DailyProgressController::class, 'today']);
+    Route::get('/streaks', [StreakController::class, 'index']);
+    Route::get('/streaks/current', [StreakController::class, 'current']);
+    Route::get('/coins', [CoinController::class, 'balance']);
+    Route::get('/coin-transactions', [CoinController::class, 'transactions']);
 
     Route::get('/challenges', [ChallengeController::class, 'index']);
     Route::post('/challenges', [ChallengeController::class, 'store']);

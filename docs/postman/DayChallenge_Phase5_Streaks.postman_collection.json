@@ -1,0 +1,216 @@
+{
+  "info": {
+    "name": "DayChallenge Phase 5 - Streaks",
+    "description": "Phase 5 Streak System endpoints for viewing authenticated user streak statistics and current streak.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Streak Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/streaks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "streaks"
+          ]
+        },
+        "description": "Returns the authenticated user's current streak and longest streak."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/streaks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "streaks"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": true,\n  \"message\": \"Streak statistics retrieved successfully\",\n  \"data\": {\n    \"current_streak\": 10,\n    \"longest_streak\": 50\n  }\n}"
+        },
+        {
+          "name": "Unauthorized",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/streaks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "streaks"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Current Streak",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/streaks/current",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "streaks",
+            "current"
+          ]
+        },
+        "description": "Returns only the authenticated user's current streak."
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/streaks/current",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "streaks",
+                "current"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": true,\n  \"message\": \"Current streak retrieved successfully\",\n  \"data\": {\n    \"current_streak\": 10\n  }\n}"
+        },
+        {
+          "name": "Unauthorized",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/streaks/current",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "streaks",
+                "current"
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
