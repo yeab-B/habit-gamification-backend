@@ -18,13 +18,13 @@ return new class extends Migration
 
 
             // User sending freeze
-            $table->foreignId('sender_id')
+            $table->foreignUuid('sender_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 
 
             // User receiving freeze
-            $table->foreignId('receiver_id')
+            $table->foreignUuid('receiver_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 

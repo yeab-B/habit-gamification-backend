@@ -18,8 +18,8 @@ return new class extends Migration
 
 
             // User who owns streak
-            $table->foreignId('user_id')
-                  ->constrained()
+            $table->foreignUuid('user_id')
+                ->constrained('users')
                   ->cascadeOnDelete();
 
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
 
-            $table->id();
+                  $table->uuid('id')->primary();
 
             // Basic user information
             $table->string('name');
@@ -26,23 +26,21 @@ return new class extends Migration
                   ->nullable()
                   ->unique();
 
+            $table->string('provider')
+                  ->nullable();
+
+            $table->string('avatar')
+                  ->nullable();
+
             // Email verification
             $table->timestamp('email_verified_at')
                   ->nullable();
 
             // Password authentication
-            // Nullable because users can register using Google
             $table->string('password')
                   ->nullable();
 
-            // User profile
-            $table->string('profile_image')
-                  ->nullable();
-
-            // Gamification system
-            // Stores current available coins
-            $table->integer('coin_balance')
-                  ->default(0);
+            $table->softDeletes();
 
             // Laravel remember login token
             $table->rememberToken();

@@ -17,8 +17,8 @@ return new class extends Migration
 
 
             // Task owner
-            $table->foreignId('user_id')
-                  ->constrained()
+            $table->foreignUuid('user_id')
+                ->constrained('users')
                   ->cascadeOnDelete();
 
 

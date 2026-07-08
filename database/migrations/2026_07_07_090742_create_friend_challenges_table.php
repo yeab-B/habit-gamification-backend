@@ -24,13 +24,13 @@ return new class extends Migration
 
 
             // User who creates challenge
-            $table->foreignId('challenger_id')
+            $table->foreignUuid('challenger_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 
 
             // User who receives challenge
-            $table->foreignId('opponent_id')
+            $table->foreignUuid('opponent_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 
@@ -49,7 +49,7 @@ return new class extends Migration
 
 
             // Winner user
-            $table->foreignId('winner_id')
+            $table->foreignUuid('winner_id')
                   ->nullable()
                   ->constrained('users')
                   ->nullOnDelete();

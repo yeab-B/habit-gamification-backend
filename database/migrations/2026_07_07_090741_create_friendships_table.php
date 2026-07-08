@@ -18,13 +18,13 @@ return new class extends Migration
 
 
             // User who sends request
-            $table->foreignId('user_id')
+            $table->foreignUuid('user_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 
 
             // User who receives request
-            $table->foreignId('friend_id')
+            $table->foreignUuid('friend_id')
                   ->constrained('users')
                   ->cascadeOnDelete();
 

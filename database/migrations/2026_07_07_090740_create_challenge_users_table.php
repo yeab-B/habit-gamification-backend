@@ -24,8 +24,8 @@ return new class extends Migration
 
 
             // User who joined challenge
-            $table->foreignId('user_id')
-                  ->constrained()
+            $table->foreignUuid('user_id')
+                ->constrained('users')
                   ->cascadeOnDelete();
 
 

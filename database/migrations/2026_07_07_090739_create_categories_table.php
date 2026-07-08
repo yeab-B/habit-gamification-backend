@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
 
             // Category owner
-            $table->foreignId('user_id')
-                  ->constrained()
+            $table->foreignUuid('user_id')
+                ->constrained('users')
                   ->cascadeOnDelete();
 
             // Category name
