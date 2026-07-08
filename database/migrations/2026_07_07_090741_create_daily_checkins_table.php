@@ -6,47 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    public function up(): void
+    {
+        Schema::create('daily_checkins', function (Blueprint $table) {
+            $table->uuid('id')->primary();
 
-    /**
-     * Run the migrations.
-     */
-            $table->id();
-
-
-                $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
+                ->cascadeOnDelete();
 
+            $table->date('date');
+            $table->integer('tasks_completed')->default(0);
+            $table->integer('total_points')->default(0);
+            $table->boolean('is_completed')->default(false);
 
-            // Challenge progress belongs to
-            $table->foreignUuid('challenge_id')
+            $table->timestamps();
+            $table->softDeletes();
 
+            $table->unique(['user_id', 'date']);
+        });
+    }
 
-            // Number of tasks completed that day
-            $table->integer('completed_tasks')
-                  ->default(0);
-
-
-                $table->integer('tasks_completed')
-            $table->integer('coins_earned')
-                  ->default(0);
-
-                // Total points earned that day
-                $table->integer('total_points')
-            $table->enum('status', [
-                'completed',
-                'missed'
-                $table->boolean('is_completed')
-                      ->default(false);
-
-            // User can only have one check-in per challenge per day
-            $table->unique([
-                $table->softDeletes();
-                'user_id',
-                'challenge_id',
-                $table->unique(['user_id', 'date']);
-
-    /**
-     * Reverse the migrations.
-
+    public function down(): void
+    {
+        Schema::dropIfExists('daily_checkins');
+    }
 };

@@ -11,38 +11,30 @@ return new class extends Migration
         Schema::create('task_completions', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-
-            // User who completed task
             $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
+                ->cascadeOnDelete();
+
+            $table->foreignUuid('task_id')
+                ->constrained('tasks')
+                ->cascadeOnDelete();
 
             $table->timestamp('completed_at');
             $table->date('completion_date');
-            $table->date('completed_date');
-
-
-            $table->softDeletes();
-            // Points earned from this completion
-            $table->integer('points_earned')
-                  ->default(0);
-
 
             $table->timestamps();
-                'completion_date'
+            $table->softDeletes();
 
-            // Prevent completing same task multiple times per day
             $table->unique([
                 'user_id',
+                'task_id',
+                'completion_date',
+            ]);
+        });
     }
 
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('task_completions');
     }
-
 };
