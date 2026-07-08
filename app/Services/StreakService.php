@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class StreakService
 {
+    public function __construct(private readonly FreezeService $freezeService)
+    {
+    }
+
     public function updateStreak(User $user, CarbonInterface|string|null $completedDate = null): Streak
     {
         $completedDate = $this->dateString($completedDate ?? now());
@@ -53,6 +57,10 @@ class StreakService
             && $streak->last_completed_date->toDateString() < now()->subDay()->toDateString()
             && $streak->current_streak !== 0
         ) {
+            if ($this->freezeService->useFreeze($user) !== null) {
+                return $streak->refresh();
+            }
+
             $this->resetStreak($user);
 
             return $streak->refresh();
@@ -70,6 +78,38 @@ class StreakService
         ])->save();
 
         return $streak->refresh();
+    }
+
+    public function protectPromiseGap(User $user, CarbonInterface|string $promiseDate, CarbonInterface|string $validationDate): Streak
+    {
+        $promiseDate = $this->dateString($promiseDate);
+        $validationDate = $this->dateString($validationDate);
+
+        return DB::transaction(function () use ($user, $promiseDate, $validationDate): Streak {
+            $streak = $this->getOrCreateStreak($user);
+            $previousDate = CarbonImmutable::parse($promiseDate)->subDay()->toDateString();
+
+            if ($streak->last_completed_date?->toDateString() === $validationDate && $streak->current_streak <= 1) {
+                $streak->forceFill([
+                    'current_streak' => 2,
+                    'longest_streak' => max($streak->longest_streak, 2),
+                ])->save();
+
+                return $streak->refresh();
+            }
+
+            if ($streak->last_completed_date?->toDateString() === $previousDate) {
+                $protectedStreak = $streak->current_streak + 1;
+
+                $streak->forceFill([
+                    'current_streak' => $protectedStreak,
+                    'longest_streak' => max($streak->longest_streak, $protectedStreak),
+                    'last_completed_date' => $promiseDate,
+                ])->save();
+            }
+
+            return $this->updateStreak($user, $validationDate);
+        });
     }
 
     public function getStatistics(User $user): Streak

@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "DayChallenge API - Phase 9 Promise System",
+    "description": "Phase 9 Promise System endpoints for creating and listing habit recovery promises.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Promises",
+      "item": [
+        {
+          "name": "Create Promise",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"I was sick today.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/promises",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "promises"
+              ]
+            },
+            "description": "Creates a pending promise for the authenticated user when today's required habits are incomplete and no other promise is pending."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"I was sick today.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promises",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promises"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": true,\n  \"message\": \"Promise created successfully\",\n  \"data\": {\n    \"id\": \"9a1b2c3d-4e5f-6789-abcd-ef0123456789\",\n    \"promise_date\": \"2026-07-10\",\n    \"validation_date\": \"2026-07-11\",\n    \"status\": \"pending\",\n    \"reason\": \"I was sick today.\",\n    \"reward_coins\": 10,\n    \"penalty_coins\": 100,\n    \"validated_at\": null,\n    \"created_at\": \"2026-07-10T09:00:00.000000Z\"\n  }\n}"
+            },
+            {
+              "name": "Error - Pending Promise Exists",
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": false,\n  \"message\": \"You already have a pending promise.\",\n  \"data\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Promises",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/promises?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "promises"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Returns paginated promise history for the authenticated user only."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/promises?page=1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promises"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"status\": true,\n  \"message\": \"Promises retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"9a1b2c3d-4e5f-6789-abcd-ef0123456789\",\n      \"promise_date\": \"2026-07-10\",\n      \"validation_date\": \"2026-07-11\",\n      \"status\": \"fulfilled\",\n      \"reason\": \"I was sick today.\",\n      \"reward_coins\": 10,\n      \"penalty_coins\": 100,\n      \"validated_at\": \"2026-07-11T21:00:00.000000Z\",\n      \"created_at\": \"2026-07-10T09:00:00.000000Z\"\n    }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"last_page\": 1,\n    \"per_page\": 15,\n    \"total\": 1\n  }\n}"
+            },
+            {
+              "name": "Error - Unauthenticated",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -13,8 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('freezes', function (Blueprint $table) {
-
-            $table->id();
+            $table->uuid('id')->primary();
 
 
             // User sending freeze
@@ -29,34 +28,33 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
 
-            // Challenge being protected
-            $table->foreignUuid('challenge_id')
-                ->constrained('challenges')
-                  ->cascadeOnDelete();
-
-
             // Freeze cost
-            $table->integer('coins_spent')
+            $table->integer('cost')
                   ->default(3);
 
 
             // Freeze status
             $table->enum('status', [
-
-                'sent',
+                'available',
                 'used',
                 'expired'
 
             ])
-            ->default('sent');
+            ->default('available');
 
 
             // When freeze was used
             $table->timestamp('used_at')
                   ->nullable();
 
+            $table->text('reason')
+                  ->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['receiver_id', 'status']);
+            $table->index('sender_id');
 
         });
     }

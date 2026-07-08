@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class FreezeResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'sender' => new UserResource($this->whenLoaded('sender')),
+            'receiver' => new UserResource($this->whenLoaded('receiver')),
+            'status' => $this->status,
+            'cost' => $this->cost,
+            'reason' => $this->reason,
+            'used_at' => $this->used_at,
+            'created_at' => $this->created_at,
+        ];
+    }
+}

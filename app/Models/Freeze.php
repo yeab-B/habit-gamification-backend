@@ -2,25 +2,39 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Freeze extends Model
 {
+    use HasFactory, HasUuids, SoftDeletes;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-
         'sender_id',
         'receiver_id',
-        'challenge_id',
-        'coins_spent',
         'status',
-        'used_at'
-
+        'cost',
+        'used_at',
+        'reason',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'cost' => 'integer',
+            'used_at' => 'datetime',
+            'deleted_at' => 'datetime',
+        ];
+    }
 
-    // User who sends freeze
-    public function sender()
+    public function sender(): BelongsTo
     {
         return $this->belongsTo(
             User::class,
@@ -28,23 +42,11 @@ class Freeze extends Model
         );
     }
 
-
-    // User who receives freeze
-    public function receiver()
+    public function receiver(): BelongsTo
     {
         return $this->belongsTo(
             User::class,
             'receiver_id'
         );
     }
-
-
-    // Related challenge
-    public function challenge()
-    {
-        return $this->belongsTo(
-            Challenge::class
-        );
-    }
-
 }

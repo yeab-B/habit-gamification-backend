@@ -13,56 +13,47 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('promises', function (Blueprint $table) {
-
-            $table->id();
-
+            $table->uuid('id')->primary();
 
             // User who made promise
             $table->foreignUuid('user_id')
                 ->constrained('users')
-                  ->cascadeOnDelete();
+                ->cascadeOnDelete();
 
 
-            // Related challenge
-            $table->foreignUuid('challenge_id')
-                ->constrained('challenges')
-                  ->cascadeOnDelete();
-
-
-            // Friend challenge if applicable
-            $table->foreignId('friend_challenge_id')
-                ->nullable()
-                ->constrained('friend_challenges')
-                  ->cascadeOnDelete();
-
-
-            // Promise message
-            $table->text('message')
-                  ->nullable();
-
-
-            // Promise deadline
+            // Day the user missed required progress
             $table->date('promise_date');
+
+            // Day that must be completed to keep the promise
+            $table->date('validation_date');
 
 
             // Promise result
             $table->enum('status', [
-
-                'active',
-                'completed',
+                'pending',
+                'fulfilled',
                 'broken',
-                'expired'
+                'expired',
+            ])->default('pending');
 
-            ])
-            ->default('active');
+            $table->text('reason')
+                ->nullable();
 
+            $table->integer('reward_coins')
+                ->default(0);
 
-            // When promise completed
-            $table->timestamp('completed_at')
-                  ->nullable();
+            $table->integer('penalty_coins')
+                ->default(0);
+
+            $table->timestamp('validated_at')
+                ->nullable();
 
 
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['user_id', 'promise_date']);
+            $table->index(['user_id', 'status']);
 
         });
     }

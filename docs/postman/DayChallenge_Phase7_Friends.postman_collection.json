@@ -1,0 +1,398 @@
+{
+  "info": {
+    "name": "DayChallenge API - Phase 7 Friends",
+    "description": "Phase 7 Friends System endpoints for searching users, managing friend requests, and listing/removing friends.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Friends",
+      "item": [
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/search?search=john",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "john",
+                  "description": "Search by name or email"
+                }
+              ]
+            },
+            "description": "Searches users by name or email. Excludes the authenticated user and existing friendship/request relationships."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Users retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{user_id}}\",\n      \"name\": \"John Walker\",\n      \"email\": \"john@example.com\",\n      \"avatar\": null,\n      \"email_verified_at\": null,\n      \"created_at\": \"2026-07-08T10:00:00.000000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Friend List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/friends",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "friends"
+              ]
+            },
+            "description": "Returns accepted friends only, including current streak, coin balance, and friendship date."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Friends retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": \"{{user_id}}\",\n      \"name\": \"John Walker\",\n      \"avatar\": null,\n      \"current_streak\": 4,\n      \"coin_balance\": 120,\n      \"friendship_date\": \"2026-07-08T10:00:00.000000Z\",\n      \"friendship_id\": \"{{friendship_id}}\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthenticated.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/friends/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "friends",
+                "request"
+              ]
+            },
+            "description": "Sends a pending friend request to another user. Cannot send to self, duplicate an active request, or request an existing friend."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Friend request sent successfully\",\n  \"data\": {\n    \"id\": \"{{friendship_id}}\",\n    \"sender\": {},\n    \"receiver\": {},\n    \"status\": \"pending\",\n    \"responded_at\": null,\n    \"created_at\": \"2026-07-08T10:00:00.000000Z\"\n  }\n}"
+            },
+            {
+              "name": "Business Rule Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"A friendship or pending request already exists.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Accept Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friendship_id\": \"{{friendship_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/friends/accept",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "friends",
+                "accept"
+              ]
+            },
+            "description": "Accepts a pending friend request. Only the receiver can accept."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Friend request accepted successfully\",\n  \"data\": {\n    \"id\": \"{{friendship_id}}\",\n    \"sender\": {},\n    \"receiver\": {},\n    \"status\": \"accepted\",\n    \"responded_at\": \"2026-07-08T10:00:00.000000Z\",\n    \"created_at\": \"2026-07-08T09:55:00.000000Z\"\n  }\n}"
+            },
+            {
+              "name": "Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\n      \"You are not allowed to perform this action.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reject Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friendship_id\": \"{{friendship_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/friends/reject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "friends",
+                "reject"
+              ]
+            },
+            "description": "Rejects a pending friend request. Only the receiver can reject."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Friend request rejected successfully\",\n  \"data\": {\n    \"id\": \"{{friendship_id}}\",\n    \"sender\": {},\n    \"receiver\": {},\n    \"status\": \"rejected\",\n    \"responded_at\": \"2026-07-08T10:00:00.000000Z\",\n    \"created_at\": \"2026-07-08T09:55:00.000000Z\"\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"friendship_id\": [\n      \"The selected friendship id is invalid.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Friend",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/friends/{{friendship_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "friends",
+                "{{friendship_id}}"
+              ]
+            },
+            "description": "Soft deletes an accepted friendship. Only participants can remove the friendship."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": true,\n  \"message\": \"Friend removed successfully\",\n  \"data\": []\n}"
+            },
+            {
+              "name": "Forbidden",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": false,\n  \"message\": \"This action is unauthorized.\",\n  \"errors\": {\n    \"authorization\": [\n      \"You are not allowed to perform this action.\"\n    ]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "friendship_id",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    }
+  ]
+}

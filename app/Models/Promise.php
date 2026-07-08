@@ -2,48 +2,45 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Promise extends Model
 {
+    use HasFactory, HasUuids, SoftDeletes;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-
         'user_id',
-        'challenge_id',
-        'friend_challenge_id',
-        'message',
         'promise_date',
+        'validation_date',
         'status',
-        'completed_at'
-
+        'reason',
+        'reward_coins',
+        'penalty_coins',
+        'validated_at',
     ];
 
-
-    // User who created promise
-    public function user()
+    protected function casts(): array
     {
-        return $this->belongsTo(
-            User::class
-        );
+        return [
+            'promise_date' => 'date',
+            'validation_date' => 'date',
+            'reward_coins' => 'integer',
+            'penalty_coins' => 'integer',
+            'validated_at' => 'datetime',
+            'deleted_at' => 'datetime',
+        ];
     }
 
-
-    // Related challenge
-    public function challenge()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(
-            Challenge::class
-        );
+        return $this->belongsTo(User::class);
     }
-
-
-    // Related friend challenge
-    public function friendChallenge()
-    {
-        return $this->belongsTo(
-            FriendChallenge::class
-        );
-    }
-
 }

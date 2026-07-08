@@ -5,7 +5,10 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChallengeController;
 use App\Http\Controllers\Api\CoinController;
 use App\Http\Controllers\Api\DailyProgressController;
+use App\Http\Controllers\Api\FriendController;
+use App\Http\Controllers\Api\FreezeController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PromiseController;
 use App\Http\Controllers\Api\StreakController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -50,6 +53,16 @@ Route::middleware('auth:sanctum')->group(function (): void {
     Route::get('/streaks/current', [StreakController::class, 'current']);
     Route::get('/coins', [CoinController::class, 'balance']);
     Route::get('/coin-transactions', [CoinController::class, 'transactions']);
+    Route::get('/users/search', [FriendController::class, 'search']);
+    Route::get('/friends', [FriendController::class, 'index']);
+    Route::post('/friends/request', [FriendController::class, 'sendRequest']);
+    Route::post('/friends/accept', [FriendController::class, 'accept']);
+    Route::post('/friends/reject', [FriendController::class, 'reject']);
+    Route::delete('/friends/{id}', [FriendController::class, 'destroy']);
+    Route::get('/freezes', [FreezeController::class, 'index']);
+    Route::post('/freezes', [FreezeController::class, 'store']);
+    Route::get('/promises', [PromiseController::class, 'index']);
+    Route::post('/promises', [PromiseController::class, 'store']);
 
     Route::get('/challenges', [ChallengeController::class, 'index']);
     Route::post('/challenges', [ChallengeController::class, 'store']);

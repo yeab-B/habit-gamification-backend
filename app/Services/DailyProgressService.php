@@ -8,6 +8,8 @@ use App\Models\Task;
 use App\Models\TaskCompletion;
 use App\Models\User;
 use App\Http\Resources\DailyCheckinResource;
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -111,5 +113,46 @@ class DailyProgressService
             'completion_percentage' => $completionPercentage,
                 'daily_checkin' => $checkin,
         ];
+    }
+
+    public function hasCompletedRequiredProgress(User $user, CarbonInterface|string|null $date = null): bool
+    {
+        $date = $this->dateString($date ?? now());
+
+        $requiredTaskCount = $this->requiredTaskCount($user);
+
+        if ($requiredTaskCount === 0) {
+            return false;
+        }
+
+        $completedCount = TaskCompletion::query()
+            ->where('user_id', $user->id)
+            ->whereDate('completion_date', $date)
+            ->distinct('task_id')
+            ->count('task_id');
+
+        return $completedCount >= $requiredTaskCount;
+    }
+
+    public function hasRequiredProgress(User $user): bool
+    {
+        return $this->requiredTaskCount($user) > 0;
+    }
+
+    private function requiredTaskCount(User $user): int
+    {
+        return Task::query()
+            ->where('user_id', $user->id)
+            ->where('is_active', true)
+            ->count();
+    }
+
+    private function dateString(CarbonInterface|string $date): string
+    {
+        if ($date instanceof CarbonInterface) {
+            return $date->toDateString();
+        }
+
+        return CarbonImmutable::parse($date)->toDateString();
     }
 }
