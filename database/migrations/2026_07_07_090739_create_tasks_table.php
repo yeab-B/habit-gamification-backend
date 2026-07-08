@@ -6,14 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-
-            $table->id();
+            $table->uuid('id')->primary();
 
 
             // Task owner
@@ -23,8 +19,8 @@ return new class extends Migration
 
 
             // Category where this task belongs
-            $table->foreignId('category_id')
-                  ->constrained()
+            $table->foreignUuid('category_id')
+                ->constrained('categories')
                   ->cascadeOnDelete();
 
 
@@ -43,33 +39,16 @@ return new class extends Migration
             $table->integer('points')
                   ->default(0);
 
-
-            // Task difficulty level
-            $table->enum('difficulty', [
-                'easy',
-                'medium',
-                'hard'
-            ])
-            ->default('easy');
-
-
-            // How often task should be completed
-            $table->enum('frequency', [
-                'daily',
-                'weekly'
-            ])
-            ->default('daily');
+            $table->boolean('is_active')
+                  ->default(true);
 
 
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }
 
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tasks');
