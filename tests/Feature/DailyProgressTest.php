@@ -39,8 +39,15 @@ class DailyProgressTest extends TestCase
         $this->assertDatabaseHas('task_completions', [
             'user_id' => $user->id,
             'task_id' => $task->id,
-            'completion_date' => now()->toDateString(),
         ]);
+
+        $this->assertTrue(
+            TaskCompletion::query()
+                ->where('user_id', $user->id)
+                ->where('task_id', $task->id)
+                ->whereDate('completion_date', now()->toDateString())
+                ->exists()
+        );
 
         $this->assertDatabaseHas('daily_checkins', [
             'user_id' => $user->id,
