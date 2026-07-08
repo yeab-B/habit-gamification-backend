@@ -51,9 +51,12 @@ class AuthService
 
     public function googleLogin(string $token): array
     {
-        $googleUser = Socialite::driver('google')->stateless()->userFromToken($token);
-
-        $user = User::query()->where('email', $googleUser->getEmail())->first();
+        try {
+            $googleUser = Socialite::driver('google')->stateless()->userFromToken($token);
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Failed to authenticate with Google: ' . $e->getMessage(), 0, $e);
+        }
+         $user = User::withTrashed()->where('email', $googleUser->getEmail())->first();
 
         if (! $user) {
             $user = User::create([
@@ -65,6 +68,10 @@ class AuthService
                 'email_verified_at' => now(),
             ]);
         } else {
+            if ($user->trashed()) {
+                $user->restore();
+            }
+
             $user->forceFill([
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
@@ -72,7 +79,6 @@ class AuthService
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ])->save();
         }
-
         return [
             'user' => $user->fresh(),
             'token' => $this->createToken($user),
@@ -119,12 +125,18 @@ class AuthService
     {
         $avatarPath = $user->avatar;
 
-        if (array_key_exists('avatar', $data) && $data['avatar'] instanceof UploadedFile) {
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
+        if (array_key_exists('avatar', $data)) {
+            if ($data['avatar'] instanceof UploadedFile) {
+                if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $avatarPath = $data['avatar']->store('avatars', 'public');
+            } elseif (is_null($data['avatar'])) {
+                if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $avatarPath = null;
             }
-
-            $avatarPath = $data['avatar']->store('avatars', 'public');
         }
 
         $user->forceFill([

@@ -9,3 +9,4 @@ env/
 vendor/
 # also ignore vendor file if present
 vendor
+.phpunit.result.cache
