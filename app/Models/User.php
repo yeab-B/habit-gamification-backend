@@ -5,7 +5,9 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,7 +16,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 #[Fillable([
     'name',
     'email',
-    'password'
+    'password',
+    'google_id',
+    'avatar',
+    'provider'
 ])]
 #[Hidden([
     'password',
@@ -23,7 +28,45 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable , HasApiTokens;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable, SoftDeletes;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'google_id',
+        'avatar',
+        'provider',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The primary key is not incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The primary key type.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
 
 
     /**
@@ -212,14 +255,12 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    /**
-     * Get attributes casts
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'deleted_at' => 'datetime',
         ];
     }
 }
