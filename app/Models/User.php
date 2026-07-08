@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,6 +63,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+
+    /**
+     * Challenges joined by the user
+     */
+    public function joinedChallenges(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Challenge::class,
+            'challenge_users',
+            'user_id',
+            'challenge_id'
+        )->withPivot(['joined_at', 'status']);
+    }
+
+
+    /**
+     * Challenges created by the user
+     */
+    public function challengesCreated()
+    {
+        return $this->hasMany(Challenge::class);
     }
 
 
