@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Finance\Events;
+
+use App\Finance\Models\EmergencyFund;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class EmergencyFundCompleted
+{
+    use Dispatchable, SerializesModels;
+
+    public function __construct(public readonly EmergencyFund $fund)
+    {
+    }
+}

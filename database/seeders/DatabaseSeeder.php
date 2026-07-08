@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AchievementSeeder::class);
         $this->call(IncomeSourceSeeder::class);
+        $this->call(ExpenseCategorySeeder::class);
 
         // User::factory(10)->create();
 
