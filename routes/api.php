@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChallengeController;
 use App\Http\Controllers\Api\CoinController;
 use App\Http\Controllers\Api\DailyProgressController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FriendController;
 use App\Http\Controllers\Api\FreezeController;
 use App\Http\Controllers\Api\ProfileController;
@@ -47,6 +48,8 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
+    Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+    Route::get('/statistics', [DashboardController::class, 'statistics']);
     Route::post('/tasks/{task}/complete', [DailyProgressController::class, 'completeTask']);
     Route::get('/daily-checkins', [DailyProgressController::class, 'checkins']);
     Route::get('/today', [DailyProgressController::class, 'today']);

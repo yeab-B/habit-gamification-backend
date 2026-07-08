@@ -25,6 +25,18 @@ class ChallengeService
         return $challenge->load(['user', 'categories', 'participants'])->loadCount(['categories', 'participants']);
     }
 
+    public function getCurrentActiveChallenge(User $user): ?Challenge
+    {
+        return Challenge::query()
+            ->where('status', 'active')
+            ->where(function ($query) use ($user): void {
+                $query->where('user_id', $user->id)
+                    ->orWhereHas('participants', fn ($query) => $query->where('users.id', $user->id));
+            })
+            ->orderByDesc('start_date')
+            ->first();
+    }
+
     public function createChallenge(User $user, array $data): Challenge
     {
         return DB::transaction(function () use ($user, $data): Challenge {
