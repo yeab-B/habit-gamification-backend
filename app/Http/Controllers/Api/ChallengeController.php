@@ -46,7 +46,7 @@ class ChallengeController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $challenges = $this->challengeService->getChallenges($request->user());
+        $challenges = $this->challengeService->getChallenges();
 
         return response()->json([
             'status' => true,

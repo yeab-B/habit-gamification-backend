@@ -11,7 +11,7 @@ use RuntimeException;
 
 class ChallengeService
 {
-    public function getChallenges(User $user): Collection
+    public function getChallenges(): Collection
     {
         return Challenge::query()
             ->with('user')

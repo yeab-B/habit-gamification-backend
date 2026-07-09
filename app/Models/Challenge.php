@@ -66,11 +66,4 @@ class Challenge extends Model
         )->withPivot(['joined_at', 'status']);
     }
 
-
-    // Streak tracking
-    public function streaks()
-    {
-        return $this->hasMany(Streak::class);
-    }
-
 }

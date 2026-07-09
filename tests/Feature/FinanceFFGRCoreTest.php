@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Finance\Models\BudgetAllocation;
-use App\Finance\Models\BudgetSetting;
-use App\Finance\Models\EmergencyFund;
-use App\Finance\Models\Expense;
-use App\Finance\Models\ExpenseCategory;
-use App\Finance\Models\Investment;
-use App\Finance\Models\InvestmentTransaction;
-use App\Finance\Models\RewardWallet;
-use App\Finance\Services\BudgetService;
+use App\Models\Finance\BudgetAllocation;
+use App\Models\Finance\BudgetSetting;
+use App\Models\Finance\EmergencyFund;
+use App\Models\Finance\Expense;
+use App\Models\Finance\ExpenseCategory;
+use App\Models\Finance\Investment;
+use App\Models\Finance\InvestmentTransaction;
+use App\Models\Finance\RewardWallet;
+use App\Services\Finance\BudgetService;
 use App\Models\Income;
 use App\Models\IncomeSource;
 use App\Models\User;
@@ -621,7 +621,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_reward_earn_via_service(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $wallet = $service->earnReward($user, 500, 'challenge', 'Completed 30 day challenge');
 
@@ -638,7 +638,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_reward_spend_via_service(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user, 1000, 'achievement', 'Earned reward');
         $wallet = $service->spendReward($user, 300, 'Bought a gift');
@@ -649,7 +649,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_reward_cannot_spend_more_than_balance(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $this->expectException(\RuntimeException::class);
         $service->spendReward($user, 100, 'Not enough');
@@ -658,7 +658,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_reward_lock_and_unlock(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user, 1000, 'achievement', 'Test');
         $wallet = $service->lockReward($user, 400);
@@ -675,7 +675,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_reward_transactions_history(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user, 1000, 'challenge', 'Completed 30 day challenge');
         $service->earnReward($user, 500, 'achievement', 'Reached milestone');
@@ -691,7 +691,7 @@ class FinanceFFGRCoreTest extends TestCase
     public function test_get_balance_returns_correct_amounts(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user, 2000, 'achievement', 'Test');
         $balance = $service->getBalance($user);
@@ -704,7 +704,7 @@ class FinanceFFGRCoreTest extends TestCase
     {
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user1, 5000, 'challenge', 'User 1 reward');
 

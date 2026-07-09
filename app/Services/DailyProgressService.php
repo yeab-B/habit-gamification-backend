@@ -7,7 +7,6 @@ use App\Models\DailyCheckin;
 use App\Models\Task;
 use App\Models\TaskCompletion;
 use App\Models\User;
-use App\Http\Resources\DailyCheckinResource;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;

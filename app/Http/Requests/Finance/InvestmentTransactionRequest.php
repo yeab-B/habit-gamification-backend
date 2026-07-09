@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Finance\Requests;
+namespace App\Http\Requests\Finance;
 
 use App\Http\Requests\ApiFormRequest;
 

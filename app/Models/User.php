@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -91,15 +92,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Challenges created by user
-     */
-    public function challenges()
-    {
-        return $this->hasMany(Challenge::class);
-    }
-
-
-    /**
      * Tasks completed by user
      */
     public function taskCompletions()
@@ -164,17 +156,29 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Accepted friends
+     * Accepted friends (bidirectional)
      */
-    public function friends()
+    public function friends(): Collection
     {
-        return $this->belongsToMany(
+        $sent = $this->belongsToMany(
             User::class,
             'friendships',
             'sender_id',
             'receiver_id'
         )
-        ->wherePivot('status', 'accepted');
+            ->wherePivot('status', 'accepted')
+            ->get();
+
+        $received = $this->belongsToMany(
+            User::class,
+            'friendships',
+            'receiver_id',
+            'sender_id'
+        )
+            ->wherePivot('status', 'accepted')
+            ->get();
+
+        return $sent->merge($received)->unique('id')->values();
     }
 
 

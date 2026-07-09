@@ -127,17 +127,17 @@ class AchievementService
                 ->where('user_id', $user->id)
                 ->where('status', 'fulfilled')
                 ->count(),
-            'budgets_allocated' => \App\Finance\Models\BudgetAllocation::query()
+            'budgets_allocated' => \App\Models\Finance\BudgetAllocation::query()
                 ->where('user_id', $user->id)
                 ->count(),
-            'emergency_goals_completed' => \App\Finance\Models\EmergencyFund::query()
+            'emergency_goals_completed' => \App\Models\Finance\EmergencyFund::query()
                 ->where('user_id', $user->id)
                 ->where('status', 'completed')
                 ->count(),
-            'investments_created' => \App\Finance\Models\Investment::query()
+            'investments_created' => \App\Models\Finance\Investment::query()
                 ->where('user_id', $user->id)
                 ->count(),
-            'reward_earned' => (int) \App\Finance\Models\RewardTransaction::query()
+            'reward_earned' => (int) \App\Models\Finance\RewardTransaction::query()
                 ->where('user_id', $user->id)
                 ->where('type', 'earn')
                 ->sum('amount'),

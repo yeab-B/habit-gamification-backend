@@ -15,12 +15,12 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PromiseController;
 use App\Http\Controllers\Api\StreakController;
 use App\Http\Controllers\Api\TaskController;
-use App\Finance\Controllers\BudgetController;
-use App\Finance\Controllers\ExpenseController;
-use App\Finance\Controllers\EmergencyFundController;
-use App\Finance\Controllers\InvestmentController;
-use App\Finance\Controllers\FinanceDashboardController;
-use App\Finance\Controllers\RewardWalletController;
+use App\Http\Controllers\Finance\BudgetController;
+use App\Http\Controllers\Finance\ExpenseController;
+use App\Http\Controllers\Finance\EmergencyFundController;
+use App\Http\Controllers\Finance\InvestmentController;
+use App\Http\Controllers\Finance\FinanceDashboardController;
+use App\Http\Controllers\Finance\RewardWalletController;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 

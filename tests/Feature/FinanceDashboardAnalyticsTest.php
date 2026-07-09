@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Finance\Models\BudgetAllocation;
-use App\Finance\Models\EmergencyFund;
-use App\Finance\Models\Expense;
-use App\Finance\Models\ExpenseCategory;
-use App\Finance\Models\Investment;
-use App\Finance\Models\InvestmentTransaction;
-use App\Finance\Models\RewardWallet;
-use App\Finance\Services\FinancialHealthService;
+use App\Models\Finance\BudgetAllocation;
+use App\Models\Finance\EmergencyFund;
+use App\Models\Finance\Expense;
+use App\Models\Finance\ExpenseCategory;
+use App\Models\Finance\Investment;
+use App\Models\Finance\InvestmentTransaction;
+use App\Models\Finance\RewardWallet;
+use App\Services\Finance\FinancialHealthService;
 use App\Models\Income;
 use App\Models\IncomeSource;
 use App\Models\User;
@@ -180,7 +180,7 @@ class FinanceDashboardAnalyticsTest extends TestCase
     public function test_dashboard_returns_reward_wallet(): void
     {
         $user = User::factory()->create();
-        $service = app(\App\Finance\Services\RewardWalletService::class);
+        $service = app(\App\Services\Finance\RewardWalletService::class);
 
         $service->earnReward($user, 5000, 'challenge', 'Test reward');
 
@@ -421,7 +421,7 @@ class FinanceDashboardAnalyticsTest extends TestCase
             'total_amount' => 50000,
         ]);
 
-        $walletService = app(\App\Finance\Services\RewardWalletService::class);
+        $walletService = app(\App\Services\Finance\RewardWalletService::class);
         $walletService->earnReward($user, 3000, 'challenge', 'Test');
     }
 

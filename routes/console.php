@@ -1,10 +1,10 @@
 <?php
 
-use App\Finance\Jobs\CalculateFinancialHealthScoreJob;
-use App\Finance\Jobs\CheckEmergencyGoalsJob;
-use App\Finance\Jobs\GenerateMonthlyBudgetReportJob;
-use App\Finance\Jobs\GenerateMonthlyFinanceReportJob;
-use App\Finance\Jobs\UpdateFinanceStatisticsJob;
+use App\Jobs\Finance\CalculateFinancialHealthScoreJob;
+use App\Jobs\Finance\CheckEmergencyGoalsJob;
+use App\Jobs\Finance\GenerateMonthlyBudgetReportJob;
+use App\Jobs\Finance\GenerateMonthlyFinanceReportJob;
+use App\Jobs\Finance\UpdateFinanceStatisticsJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -17,7 +17,7 @@ Schedule::job(new UpdateFinanceStatisticsJob)->daily();
 Schedule::job(new CheckEmergencyGoalsJob)->daily();
 Schedule::call(function (): void {
     \App\Models\User::query()->each(function (\App\Models\User $user): void {
-        \App\Finance\Jobs\CalculateFinancialHealthScoreJob::dispatch($user->id);
+        \App\Jobs\Finance\CalculateFinancialHealthScoreJob::dispatch($user);
     });
 })->daily()->name('calculate-financial-health');
 Schedule::job(new GenerateMonthlyBudgetReportJob)->monthly();

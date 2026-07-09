@@ -14,7 +14,7 @@ return new class extends Migration
             $table->decimal('asrat_percentage', 5, 2)->default(10);
             $table->decimal('needs_percentage', 5, 2)->default(50);
             $table->decimal('emergency_percentage', 5, 2)->default(20);
-            $table->decimal('investment_percentage', 5, 2)->default(20);
+            $table->decimal('investment_percentage', 5, 2)->default(10);
             $table->decimal('reward_percentage', 5, 2)->default(10);
             $table->timestamps();
         });
@@ -107,6 +107,7 @@ return new class extends Migration
         Schema::create('reward_transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('reward_wallet_id')->constrained('reward_wallets')->cascadeOnDelete();
             $table->enum('type', ['earn', 'spend']);
             $table->decimal('amount', 12, 2);
             $table->string('source');

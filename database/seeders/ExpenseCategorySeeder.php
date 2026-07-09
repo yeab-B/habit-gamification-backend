@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Finance\Models\ExpenseCategory;
+use App\Models\Finance\ExpenseCategory;
 use Illuminate\Database\Seeder;
 
 class ExpenseCategorySeeder extends Seeder
