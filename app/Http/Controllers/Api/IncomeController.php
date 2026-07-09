@@ -10,6 +10,7 @@ use App\Models\Income;
 use App\Services\IncomeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 use RuntimeException;
 
 class IncomeController extends Controller
@@ -18,6 +19,60 @@ class IncomeController extends Controller
     {
     }
 
+    #[OA\Get(
+        path: "/incomes",
+        summary: "List income history",
+        description: "Retrieves a paginated list of incomes, with optional filters by source and date range, plus summary metrics in ETB.",
+        security: [["bearerAuth" => []]],
+        tags: ["Finance"],
+        parameters: [
+            new OA\Parameter(name: "source_id", in: "query", required: false, description: "Income source UUID filter", schema: new OA\Schema(type: "string", format: "uuid")),
+            new OA\Parameter(name: "start_date", in: "query", required: false, description: "Filter start date (YYYY-MM-DD)", schema: new OA\Schema(type: "string", format: "date")),
+            new OA\Parameter(name: "end_date", in: "query", required: false, description: "Filter end date (YYYY-MM-DD)", schema: new OA\Schema(type: "string", format: "date")),
+            new OA\Parameter(name: "page", in: "query", required: false, description: "Page number", schema: new OA\Schema(type: "integer", minimum: 1))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Income history retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "status", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Income history retrieved successfully"),
+                        new OA\Property(property: "data", type: "array", items: new OA\Items(ref: "#/components/schemas/Income")),
+                        new OA\Property(
+                            property: "summary",
+                            properties: [
+                                new OA\Property(property: "total_income", type: "number", format: "float", example: 85000.00),
+                                new OA\Property(property: "currency", type: "string", example: "ETB")
+                            ]
+                        ),
+                        new OA\Property(
+                            property: "by_source",
+                            type: "array",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "name", type: "string", example: "Salary"),
+                                    new OA\Property(property: "total", type: "number", format: "float", example: 60000.00)
+                                ]
+                            )
+                        ),
+                        new OA\Property(
+                            property: "meta",
+                            properties: [
+                                new OA\Property(property: "current_page", type: "integer", example: 1),
+                                new OA\Property(property: "last_page", type: "integer", example: 2),
+                                new OA\Property(property: "per_page", type: "integer", example: 15),
+                                new OA\Property(property: "total", type: "integer", example: 20)
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: "Unauthenticated", content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedResponse")),
+            new OA\Response(response: 422, description: "Validation failure", content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse"))
+        ]
+    )]
     public function index(Request $request): JsonResponse
     {
         $filters = $request->validate([
@@ -44,6 +99,32 @@ class IncomeController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/incomes",
+        summary: "Create income record",
+        description: "Records a new income, calculates Asrat (10% tithe by default), and allocates remaining amount to budget targets.",
+        security: [["bearerAuth" => []]],
+        tags: ["Finance"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/StoreIncomeRequest")
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Income created successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "status", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Income created successfully"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/Income")
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: "Unauthenticated", content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedResponse")),
+            new OA\Response(response: 422, description: "Validation/Business rule failure", content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse"))
+        ]
+    )]
     public function store(StoreIncomeRequest $request): JsonResponse
     {
         try {
@@ -61,6 +142,37 @@ class IncomeController extends Controller
         ], 201);
     }
 
+    #[OA\Put(
+        path: "/incomes/{income}",
+        summary: "Update income record",
+        description: "Updates an existing income record.",
+        security: [["bearerAuth" => []]],
+        tags: ["Finance"],
+        parameters: [
+            new OA\Parameter(name: "income", in: "path", required: true, description: "The ID of the income record", schema: new OA\Schema(type: "string", format: "uuid"))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/StoreIncomeRequest")
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Income updated successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "status", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Income updated successfully"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/Income")
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: "Unauthenticated", content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedResponse")),
+            new OA\Response(response: 403, description: "Unauthorized access", content: new OA\JsonContent(ref: "#/components/schemas/ForbiddenResponse")),
+            new OA\Response(response: 404, description: "Income not found", content: new OA\JsonContent(ref: "#/components/schemas/NotFoundResponse")),
+            new OA\Response(response: 422, description: "Validation failure", content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse"))
+        ]
+    )]
     public function update(UpdateIncomeRequest $request, Income $income): JsonResponse
     {
         try {
@@ -78,6 +190,32 @@ class IncomeController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: "/incomes/{income}",
+        summary: "Delete income record",
+        description: "Deletes an income record and reverts allocations.",
+        security: [["bearerAuth" => []]],
+        tags: ["Finance"],
+        parameters: [
+            new OA\Parameter(name: "income", in: "path", required: true, description: "The ID of the income record", schema: new OA\Schema(type: "string", format: "uuid"))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Income deleted successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "status", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Income deleted successfully"),
+                        new OA\Property(property: "data", type: "array", items: new OA\Items(type: "string"), example: [])
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: "Unauthenticated", content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedResponse")),
+            new OA\Response(response: 403, description: "Unauthorized access", content: new OA\JsonContent(ref: "#/components/schemas/ForbiddenResponse")),
+            new OA\Response(response: 404, description: "Income not found", content: new OA\JsonContent(ref: "#/components/schemas/NotFoundResponse"))
+        ]
+    )]
     public function destroy(Request $request, Income $income): JsonResponse
     {
         if (! $request->user()->can('delete', $income)) {
